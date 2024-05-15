@@ -12,6 +12,7 @@ public class CardDatabase {
 	
 	/**
 	 * インスタンスのゲッター
+	 * @see {@link #instance}
 	 * @return インスタンス 
 	 */
 	public static CardDatabase getInstance() {
@@ -20,6 +21,13 @@ public class CardDatabase {
 		}
 		return instance;
 	}
+	
+	/**
+	 * カードのゲッター
+	 * @see {@link #cards}
+	 * @return カード
+	 */
+	public Card[] getCards() { return cards; }
 	
 	/**
 	 * カードのデータを初期化
