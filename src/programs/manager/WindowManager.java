@@ -50,9 +50,9 @@ public class WindowManager {
 	
 	/**
 	 * ウィンドウ作成
-	 * @param title
-	 * @param height
-	 * @param width
+	 * @param title ウィンドウタイトル
+	 * @param height ウィンドウの高さ
+	 * @param width ウィンドウの幅
 	 */
 	public void createWindow(String title,int height, int width) {
 		this.height = height;
