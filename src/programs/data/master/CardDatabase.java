@@ -1,26 +1,14 @@
 package programs.data.master;
 
-import java.util.Objects;
+import programs.system.Singleton;
 
 /**
  * すべてのカードのデータベース
+ * @see スーパークラス:{@link programs.system.Singleton Singleton}
  * @author 進藤颯斗
  */
-public class CardDatabase {
-	private static CardDatabase instance;
+public class CardDatabase extends Singleton<CardDatabase> {
 	private Card[] cards;
-	
-	/**
-	 * インスタンスのゲッター
-	 * @see {@link #instance}
-	 * @return インスタンス 
-	 */
-	public static CardDatabase getInstance() {
-		if(Objects.isNull(instance)) {
-			instance = new CardDatabase();
-		}
-		return instance;
-	}
 	
 	/**
 	 * カードのゲッター
