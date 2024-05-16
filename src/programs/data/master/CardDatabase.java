@@ -20,7 +20,7 @@ public class CardDatabase extends Singleton<CardDatabase> {
 	/**
 	 * カードのデータを初期化
 	 */
-	private CardDatabase() {
+	public CardDatabase() {
 		cards = new Card[52];
 		
 		for(int i = 0; i < 4; i++) {
