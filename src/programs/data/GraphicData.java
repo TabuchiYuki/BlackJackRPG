@@ -7,12 +7,12 @@ import java.awt.image.BufferedImage;
  * @author 田淵勇輝
  */
 public class GraphicData {
-	BufferedImage image;
-	Vector2 pivot;
-	Vector2 position;
-	Vector2 scale;
-	float rotation;
-	float radian;
+	private BufferedImage image;
+	private Vector2 pivot;
+	private Vector2 position;
+	private Vector2 scale;
+	private double rotation;
+	private double radian;
 	
 	/**
 	 * 全てのデータを初期化するコンストラクタ
@@ -22,13 +22,44 @@ public class GraphicData {
 	 * @param scale 拡大率
 	 * @param rotation 回転角(度数法)
 	 */
-	public GraphicData(BufferedImage image, Vector2 pivot, Vector2 position, Vector2 scale, float rotation) {
+	public GraphicData(BufferedImage image, Vector2 pivot, Vector2 position, Vector2 scale, double rotation) {
 		this.image = image;
 		this.pivot = pivot;
 		this.position = position;
 		this.scale = scale;
 		this.rotation = rotation;
-		radian = (float) Math.toRadians(rotation);
+		radian = Math.toRadians(rotation);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * ピボットの位置は画像の中心になる
+	 * @param image
+	 * @param position
+	 * @param scale
+	 * @param rotation
+	 */
+	public GraphicData(BufferedImage image, Vector2 position, Vector2 scale, double rotation) {
+		this.image = image;
+		pivot = new Vector2((double)image.getWidth() / 2, (double)image.getHeight() / 2);
+		this.position = position;
+		this.scale = scale;
+		this.rotation = rotation;
+		radian = Math.toRadians(rotation);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * 画像以外は自動的に初期化される
+	 * @param image 画像
+	 */
+	public GraphicData(BufferedImage image) {
+		this.image = image;
+		pivot = new Vector2(image.getWidth() / 2, image.getHeight() / 2);
+		position = new Vector2(0.0d, 0.0d);
+		scale = new Vector2(1.0d, 1.0d);
+		rotation = 0.0d;
+		radian = Math.toRadians(rotation);
 	}
 	
 	/**
@@ -60,13 +91,13 @@ public class GraphicData {
 	 * @see {@link #rotation}
 	 * @return 回転角(度数法)
 	 */
-	public float getRotation() { return rotation; }
+	public double getRotation() { return rotation; }
 	/**
 	 * 回転角(弧度法)のゲッター
 	 * @see {@link #radian}
 	 * @return 回転角(弧度法)
 	 */
-	public float getRadian() { return radian; }
+	public double getRadian() { return radian; }
 	
 	/**
 	 * ピボットのセッター
@@ -91,17 +122,17 @@ public class GraphicData {
 	 * @see {@link #rotation}
 	 * @param rotation 回転角(度数法)
 	 */
-	public void setRotation(float rotation) {
+	public void setRotation(double rotation) {
 		this.rotation = rotation;
-		radian = (float) Math.toRadians(rotation);
+		radian = Math.toRadians(rotation);
 	}
 	/**
 	 * 回転角(弧度法)のセッター
 	 * @see {@link #radian}
 	 * @param radian 回転角(弧度法)
 	 */
-	public void setRadian(float radian) {
+	public void setRadian(double radian) {
 		this.radian = radian;
-		rotation = (float) Math.toDegrees(radian);
+		rotation = Math.toDegrees(radian);
 	}
 }
