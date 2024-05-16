@@ -12,12 +12,11 @@ import javax.imageio.ImageIO;
  * 画像を読み込むためのシングルトンクラス
  * @author 田淵勇輝
  */
-public class ImageLoader {
+public class ImageLoader{
 	// 定数
 	private final String IMAGE_REGISTRY_LOCAL_PATH = "resources/images/";
 	private final String CLASS_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 	
-	// インスタンス
 	private static ImageLoader instance;
 	
 	/**
@@ -28,7 +27,7 @@ public class ImageLoader {
 	/**
 	 * インスタンスのゲッター
 	 * @see {@link #instance}
-	 * @return インスタンス
+	 * @return
 	 */
 	public static ImageLoader getInstance() {
 		if(Objects.isNull(instance)) {
