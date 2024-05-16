@@ -13,7 +13,7 @@ public class GameManager {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception  {
-		WindowManager.getInstance().createWindow("Test", 800, 600);
-		WindowManager.getInstance().setIcon(ImageLoader.getInstance().loadImage("testicon.png"));
+		WindowManager.getInstance(WindowManager.class).createWindow("Test", 800, 600);
+		WindowManager.getInstance(WindowManager.class).setIcon(ImageLoader.getInstance().loadImage("testicon.png"));
 	}
 }

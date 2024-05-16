@@ -1,33 +1,20 @@
 package programs.manager;
 
 import java.awt.Image;
-import java.util.Objects;
 
 import javax.swing.JFrame;
 
+import programs.system.Singleton;
+
 /**
  * ウィンドウの管理をするシングルトンクラス
+ * @see スーパークラス:{@link programs.system.Singleton Singleton}
+ * @author 田淵勇輝
  */
-public class WindowManager {
-	private static WindowManager instance;
-	
+public class WindowManager extends Singleton<WindowManager> {
 	private int height;
 	private int width;
 	private JFrame frame;
-	
-	private WindowManager() { }
-	
-	/**
-	 * インスタンスのゲッター
-	 * @see {@link #instance}
-	 * @return インスタンス
-	 */
-	public static WindowManager getInstance() {
-		if(Objects.isNull(instance)) {
-			instance = new WindowManager();
-		}
-		return instance;
-	}
 	
 	/**
 	 * 高さのゲッター
