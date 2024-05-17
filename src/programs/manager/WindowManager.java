@@ -1,6 +1,8 @@
 package programs.manager;
 
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.util.Objects;
 
 import javax.swing.JFrame;
@@ -65,16 +67,36 @@ public class WindowManager{
 	}
 	
 	/**
-	 * フレームの作成
+	 * ウィンドウの作成
 	 * @param title タイトル
 	 * @param width 幅
 	 * @param height 高さ
 	 */
 	private void createFrame(String title, int width, int height) {
         frame = new JFrame(title);
+        
+        // ウィンドウのサイズを設定
         frame.setSize(width, height);
+        
+        // ウィンドウのリサイズを禁止
         frame.setResizable(false);
+        
+        // 画面の中央にウィンドウを表示するための計算
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = (int) screenSize.getWidth();
+        int screenHeight = (int) screenSize.getHeight();
+        int windowWidth = frame.getWidth();
+        int windowHeight = frame.getHeight();
+        int x = (screenWidth - windowWidth) / 2;
+        int y = (screenHeight - windowHeight) / 2;
+        
+        // ウィンドウの表示位置を設定
+        frame.setLocation(x, y);
+        
+        // ウィンドウを閉じた時に処理を終了する設定
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // ウィンドウを表示
         frame.setVisible(true);
     }
 	
