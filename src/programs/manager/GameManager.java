@@ -18,13 +18,13 @@ public class GameManager {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception  {
-		final int REFRESH_RATE = 60;
+		final int REFRESH_RATE = 30;
 		final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
 		
 		GraphicDrawer graphicDrawer = new GraphicDrawer();
 		
 		BufferedImage image = ImageLoader.getInstance().loadImage("sample.png");
-		GraphicData graphic = new GraphicData(image, new Vector2(0.0d, 0.0d), new Vector2(1.0d, 1.0d), 0.0d);
+		GraphicData graphic = new GraphicData(image, new Vector2(100.0d, 200.0d), new Vector2(1.0d, 1.0d), 0.0d, new Vector2(0.0d, 0.0d));
 		graphicDrawer.getGraphicData().add(graphic);
 		
 		WindowManager.getInstance().createWindow("Test", 800, 600);
@@ -33,7 +33,6 @@ public class GameManager {
 		
 		while(true) {
 			Thread.sleep(1000/REFRESH_RATE);
-			graphic.setRotation(graphic.getRotation() + 30.0d * REFRESH_TIME);
 			graphicDrawer.repaint();
 		}
 	}

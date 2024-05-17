@@ -13,6 +13,7 @@ public class GraphicData {
 	private Vector2 scale;
 	private double rotation;
 	private double radian;
+	private Vector2 shear;
 	
 	/**
 	 * 全てのデータを初期化するコンストラクタ
@@ -21,31 +22,36 @@ public class GraphicData {
 	 * @param position 座標
 	 * @param scale 拡大率
 	 * @param rotation 回転角(度数法)
+	 * @param shear せん断
 	 */
-	public GraphicData(BufferedImage image, Vector2 pivot, Vector2 position, Vector2 scale, double rotation) {
+	public GraphicData(BufferedImage image, Vector2 pivot, Vector2 position, Vector2 scale, double rotation, Vector2 shear) {
 		this.image = image;
 		this.pivot = pivot;
 		this.position = position;
 		this.scale = scale;
 		this.rotation = rotation;
 		radian = Math.toRadians(rotation);
+		this.shear = shear;
 	}
 	
 	/**
 	 * コンストラクタ
 	 * ピボットの位置は画像の中心になる
-	 * @param image
-	 * @param position
-	 * @param scale
-	 * @param rotation
+	 * @param image 画像
+	 * @param position 座標
+	 * @param scale 拡大率
+	 * @param rotation 回転角(度数法)
+	 * @param shear せん断
 	 */
-	public GraphicData(BufferedImage image, Vector2 position, Vector2 scale, double rotation) {
+	public GraphicData(BufferedImage image, Vector2 position, Vector2 scale, double rotation, Vector2 shear) {
 		this.image = image;
 		pivot = new Vector2((double)image.getWidth() / 2, (double)image.getHeight() / 2);
 		this.position = position;
 		this.scale = scale;
 		this.rotation = rotation;
+		rotation = circle(rotation, 0.0d, 360.0d);
 		radian = Math.toRadians(rotation);
+		this.shear = shear;
 	}
 	
 	/**
@@ -60,6 +66,7 @@ public class GraphicData {
 		scale = new Vector2(1.0d, 1.0d);
 		rotation = 0.0d;
 		radian = Math.toRadians(rotation);
+		shear = new Vector2(0.0d, 0.0d);
 	}
 	
 	/**
@@ -98,7 +105,19 @@ public class GraphicData {
 	 * @return 回転角(弧度法)
 	 */
 	public double getRadian() { return radian; }
+	/**
+	 * せん断のゲッター
+	 * @see {@link #shear}
+	 * @return せん断
+	 */
+	public Vector2 getShear() { return shear; }
 	
+	/**
+	 * 画像のセッター
+	 * @see {@link #image}
+	 * @param image 画像
+	 */
+	public void setImage(BufferedImage image) { this.image = image; }
 	/**
 	 * ピボットのセッター
 	 * @see {@link #pivot}
@@ -124,15 +143,48 @@ public class GraphicData {
 	 */
 	public void setRotation(double rotation) {
 		this.rotation = rotation;
+		rotation = circle(rotation, 0.0d, 360.0d);
 		radian = Math.toRadians(rotation);
 	}
 	/**
-	 * 回転角(弧度法)のセッター
-	 * @see {@link #radian}
-	 * @param radian 回転角(弧度法)
+	 * せん断のセッター
+	 * @see {@link #shear}
+	 * @param shear せん断
 	 */
-	public void setRadian(double radian) {
-		this.radian = radian;
-		rotation = Math.toDegrees(radian);
+	public void setShear(Vector2 shear) { this.shear = shear; }
+	
+	public void addPivot(Vector2 piv) {
+		pivot.setX(pivot.getX() + piv.getX());
+		pivot.setY(pivot.getY() + piv.getY());
+	}
+	
+	public void addPosition(Vector2 pos) {
+		position.setX(position.getX() + pos.getX());
+		position.setY(position.getY() + pos.getY());
+	}
+	
+	public void addScale(Vector2 sca) {
+		scale.setX(scale.getX() + sca.getX());
+		scale.setY(scale.getY() + sca.getY());
+	}
+	
+	public void addRotation(double rot) {
+		rotation += rot;
+		rotation = circle(rotation, 0.0d, 360.0d);
+		radian = Math.toRadians(rotation);
+	}
+	
+	public void addShear(Vector2 shr) {
+		shear.setX(shear.getX() + shr.getX());
+		shear.setY(shear.getY() + shr.getY());
+	}
+	
+	private double circle(double value, double min, double max) {
+		double range = max - min;
+		double normalized = (value - min) % range;
+        if (normalized < 0) {
+            normalized += range;
+        }
+        return normalized + min;
 	}
 }

@@ -26,15 +26,18 @@ public class GraphicDrawer extends JPanel {
 	private void transformImage(Graphics2D g2d, GraphicData gd) {
 		AffineTransform at = g2d.getTransform();
 		// ピボット位置に移動
-		at.translate((int)gd.getPivot().getX(), (int)gd.getPivot().getY());
-		// スケーリング
-		at.scale(gd.getScale().getX(), gd.getScale().getY());
+		at.translate(gd.getPivot().getX(), gd.getPivot().getY());
+		// 移動
+		at.translate(gd.getPosition().getX(), gd.getPosition().getY());
 		// 回転
 		at.rotate(gd.getRadian());
+		// スケーリング
+		at.scale(gd.getScale().getX(), gd.getScale().getY());
+		// せん断
+		at.shear(gd.getShear().getX(), gd.getShear().getY());
 		// ピボット位置から戻す
-		at.translate(-(int)gd.getPivot().getX(), -(int)gd.getPivot().getY());
-		// 移動
-		at.translate((int)gd.getPosition().getX(), (int)gd.getPosition().getY());
+		at.translate(-gd.getPivot().getX(), -gd.getPivot().getY());
+		
 		g2d.setTransform(at);
 		// 描画
 		g2d.drawImage(gd.getImage(), 0, 0, this);
