@@ -36,17 +36,27 @@ public class GraphicDrawer extends JPanel {
 	 */
 	private void transformImage(Graphics2D g2d, GraphicData gd) {
 		AffineTransform at = g2d.getTransform();
-		// ピボット位置に移動
-		at.translate(gd.getPivot().getX(), gd.getPivot().getY());
+		// ピボットを中心にする
+		at.translate(-gd.getPivot().getX() * gd.getScale().getX(), -gd.getPivot().getY() * gd.getScale().getY());
 		// 移動
 		at.translate(gd.getPosition().getX(), gd.getPosition().getY());
+		// 回転軸に移動
+		at.translate(gd.getPivot().getX() * gd.getScale().getX(), gd.getPivot().getY() * gd.getScale().getY());
 		// 回転
 		at.rotate(gd.getRadian());
+		// 回転軸から戻す
+		at.translate(-gd.getPivot().getX() * gd.getScale().getX(), gd.getPivot().getY() * -gd.getScale().getY());
+		// ピボット位置に移動
+		at.translate(gd.getPivot().getX(), gd.getPivot().getY());
 		// スケーリング
 		at.scale(gd.getScale().getX(), gd.getScale().getY());
+		// スケーリングに合わせてピボット位置から戻す
+		at.translate(-gd.getPivot().getX() * (1 / gd.getScale().getX()), -gd.getPivot().getY() * (1 / gd.getScale().getY()));
+		// せん断の中心に移動
+		at.translate(gd.getPivot().getX(), gd.getPivot().getY());
 		// せん断
 		at.shear(gd.getShear().getX(), gd.getShear().getY());
-		// ピボット位置から戻す
+		// せん断の中心から戻す
 		at.translate(-gd.getPivot().getX(), -gd.getPivot().getY());
 		
 		g2d.setTransform(at);

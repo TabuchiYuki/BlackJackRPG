@@ -2,6 +2,8 @@ package programs.manager;
 
 import java.awt.image.BufferedImage;
 
+import javax.swing.SwingUtilities;
+
 import programs.data.GraphicData;
 import programs.data.Vector2;
 import programs.graphic.GraphicDrawer;
@@ -23,16 +25,20 @@ public class GameManager {
 		
 		GraphicDrawer graphicDrawer = new GraphicDrawer();
 		
-		BufferedImage image = ImageLoader.getInstance().loadImage("sample.png");
-		GraphicData graphic = new GraphicData(image, new Vector2(100.0d, 200.0d), new Vector2(1.0d, 1.0d), 0.0d, new Vector2(0.0d, 0.0d));
+		BufferedImage image = ImageLoader.getInstance().imageSplit(ImageLoader.getInstance().loadImage("cards.png"), 5, 13, 2, 12);
+		GraphicData graphic = new GraphicData(image, new Vector2(400.0d, 300.0d), new Vector2(0.5d, 0.5d), 0.0d, new Vector2(0.0d, 0.0d));
 		graphicDrawer.getGraphicData().add(graphic);
 		
-		WindowManager.getInstance().createWindow("Test", 800, 600);
-		WindowManager.getInstance().setIcon(ImageLoader.getInstance().loadImage("testicon.png"));
-		WindowManager.getInstance().getFrame().add(graphicDrawer);
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+		    	WindowManager.getInstance().createWindow("Black Jack Quest", 800, 600);
+		    	WindowManager.getInstance().getFrame().add(graphicDrawer);
+		    }
+		});
 		
 		while(true) {
 			Thread.sleep(1000/REFRESH_RATE);
+			graphic.addRotation(30.0d * REFRESH_TIME);
 			graphicDrawer.repaint();
 		}
 	}
