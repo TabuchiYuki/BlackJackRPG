@@ -25,7 +25,9 @@ public class GameManager {
 		
 		GraphicDrawer graphicDrawer = new GraphicDrawer();
 		
-		BufferedImage image = ImageLoader.getInstance().imageSplit(ImageLoader.getInstance().loadImage("cards.png"), 5, 13, 2, 12);
+		BufferedImage cardImage = ImageLoader.getInstance().loadImage("cards.png");
+		
+		BufferedImage image = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 2, 12);
 		GraphicData graphic = new GraphicData(image, new Vector2(400.0d, 300.0d), new Vector2(0.5d, 0.5d), 0.0d, new Vector2(0.0d, 0.0d));
 		graphicDrawer.getGraphicData().add(graphic);
 		

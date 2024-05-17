@@ -56,6 +56,15 @@ public class ImageLoader{
 		}
 	}
 	
+	/**
+	 * 画像をセルに分割
+	 * @param img 分割する画像
+	 * @param vertical 縦分割数
+	 * @param horizontal 横分割数
+	 * @param getVertical 取得するセルの縦インデックス
+	 * @param getHorizontal 取得するセルの横インデックス
+	 * @return 分割した画像
+	 */
 	public BufferedImage imageSplit(BufferedImage img, int vertical, int horizontal, int getVertical, int getHorizontal) {
 		if(vertical <= 0 || horizontal <= 0 || getVertical < 0 || getHorizontal < 0
 			|| getVertical > vertical || getHorizontal > horizontal) {
