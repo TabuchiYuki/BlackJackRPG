@@ -8,43 +8,52 @@ import java.awt.image.BufferedImage;
  */
 public class GraphicData {
 	private BufferedImage image;
+	private int layer;
 	private Vector2 pivot;
 	private Vector2 position;
 	private Vector2 scale;
 	private double rotation;
 	private double radian;
 	private Vector2 shear;
+	private boolean show;
 	
 	/**
 	 * 全てのデータを初期化するコンストラクタ
 	 * @param img 画像
+	 * @param layer レイヤー番号
 	 * @param pivot ピボット座標
 	 * @param position 座標
 	 * @param scale 拡大率
 	 * @param rotation 回転角(度数法)
 	 * @param shear せん断
+	 * @param show 表示/非表示
 	 */
-	public GraphicData(BufferedImage image, Vector2 pivot, Vector2 position, Vector2 scale, double rotation, Vector2 shear) {
+	public GraphicData(BufferedImage image, int layer, Vector2 pivot, Vector2 position, Vector2 scale, double rotation, Vector2 shear, boolean show) {
 		this.image = image;
+		this.layer = layer;
 		this.pivot = pivot;
 		this.position = position;
 		this.scale = scale;
 		this.rotation = rotation;
 		radian = Math.toRadians(rotation);
 		this.shear = shear;
+		this.show = show;
 	}
 	
 	/**
 	 * コンストラクタ
 	 * ピボットの位置は画像の中心になる
 	 * @param image 画像
+	 * @param layer レイヤー番号
 	 * @param position 座標
 	 * @param scale 拡大率
 	 * @param rotation 回転角(度数法)
 	 * @param shear せん断
+	 * @param show 表示/非表示
 	 */
-	public GraphicData(BufferedImage image, Vector2 position, Vector2 scale, double rotation, Vector2 shear) {
+	public GraphicData(BufferedImage image, int layer, Vector2 position, Vector2 scale, double rotation, Vector2 shear, boolean show) {
 		this.image = image;
+		this.layer = layer;
 		pivot = new Vector2((double)image.getWidth() / 2, (double)image.getHeight() / 2);
 		this.position = position;
 		this.scale = scale;
@@ -52,21 +61,26 @@ public class GraphicData {
 		rotation = circle(rotation, 0.0d, 360.0d);
 		radian = Math.toRadians(rotation);
 		this.shear = shear;
+		this.show = show;
 	}
 	
 	/**
 	 * コンストラクタ
 	 * 画像以外は自動的に初期化される
 	 * @param image 画像
+	 * @param layer レイヤー番号
+	 * @param show 表示/非表示
 	 */
-	public GraphicData(BufferedImage image) {
+	public GraphicData(BufferedImage image, int layer, boolean show) {
 		this.image = image;
+		this.layer = layer;
 		pivot = new Vector2(image.getWidth() / 2, image.getHeight() / 2);
 		position = new Vector2(0.0d, 0.0d);
 		scale = new Vector2(1.0d, 1.0d);
 		rotation = 0.0d;
 		radian = Math.toRadians(rotation);
 		shear = new Vector2(0.0d, 0.0d);
+		this.show = show;
 	}
 	
 	/**
@@ -75,6 +89,12 @@ public class GraphicData {
 	 * @return 画像
 	 */
 	public BufferedImage getImage() { return image; }
+	/**
+	 * レイヤー番号のゲッター
+	 * @see {@link #layer}
+	 * @return
+	 */
+	public int getLayer() { return layer; }
 	/**
 	 * ピボットのゲッター
 	 * @see {@link #pivot}
@@ -111,6 +131,11 @@ public class GraphicData {
 	 * @return せん断
 	 */
 	public Vector2 getShear() { return shear; }
+	/**
+	 * 表示/非表示のゲッター
+	 * @return 表示/非表示
+	 */
+	public boolean isShow() { return show; }
 	
 	/**
 	 * 画像のセッター
@@ -118,6 +143,12 @@ public class GraphicData {
 	 * @param image 画像
 	 */
 	public void setImage(BufferedImage image) { this.image = image; }
+	/**
+	 * レイヤー番号のセッター
+	 * @see {@link #layer}
+	 * @param layer レイヤー番号
+	 */
+	public void setLayer(int layer) { this.layer = layer; }
 	/**
 	 * ピボットのセッター
 	 * @see {@link #pivot}
@@ -152,6 +183,13 @@ public class GraphicData {
 	 * @param shear せん断
 	 */
 	public void setShear(Vector2 shear) { this.shear = shear; }
+	/**
+	 * 表示/非表示のセッター
+	 * @param show 表示/非表示
+	 */
+	public void setShow(boolean show) { this.show = show; }
+	
+	//-----------------アクセサここまで-----------------
 	
 	/**
 	 * ピボットを加算

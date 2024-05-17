@@ -73,6 +73,7 @@ public class WindowManager{
 	private void createFrame(String title, int width, int height) {
         frame = new JFrame(title);
         frame.setSize(width, height);
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

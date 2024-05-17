@@ -55,4 +55,39 @@ public class ImageLoader{
 			return null;
 		}
 	}
+	
+	/**
+	 * 画像をセルに分割
+	 * @param img 分割する画像
+	 * @param vertical 縦分割数
+	 * @param horizontal 横分割数
+	 * @param getVertical 取得するセルの縦インデックス
+	 * @param getHorizontal 取得するセルの横インデックス
+	 * @return 分割した画像
+	 */
+	public BufferedImage imageSplit(BufferedImage img, int vertical, int horizontal, int getVertical, int getHorizontal) {
+		if(vertical <= 0 || horizontal <= 0 || getVertical < 0 || getHorizontal < 0
+			|| getVertical > vertical || getHorizontal > horizontal) {
+			System.out.print("不正な値が入力されています");
+			return null;
+		}
+		
+		int height = img.getHeight();
+		int width = img.getWidth();
+		
+		int splitHeight = height / vertical;
+		int splitWidth = width / horizontal;
+		
+		
+		if(splitWidth < 1 || splitHeight < 1) {
+			System.out.print("分割できません");
+			return null;
+		}
+		
+		int startX = getHorizontal * splitWidth;
+		int startY = getVertical * splitHeight;
+        
+		BufferedImage splitImage = img.getSubimage(startX, startY, splitWidth, splitHeight);
+		return splitImage;
+	}
 }
