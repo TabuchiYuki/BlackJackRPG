@@ -1,6 +1,5 @@
 package programs.system;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class ImageLoader{
 	 * @return 取得した画像,取得できなかった場合、nullを返す
 	 * @throws IOException
 	 */
-	public Image loadImage(String name) throws IOException {
+	public BufferedImage loadImage(String name) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		sb.append(CLASS_PATH);
 		sb.append(IMAGE_REGISTRY_LOCAL_PATH);
@@ -51,8 +50,7 @@ public class ImageLoader{
 		File file = new File(path);
 		
 		if(file.exists()) {
-			BufferedImage buffImg = ImageIO.read(file);
-			return buffImg.getScaledInstance(buffImg.getWidth(), buffImg.getHeight(), Image.SCALE_DEFAULT);
+			return ImageIO.read(file);
 		} else {
 			return null;
 		}

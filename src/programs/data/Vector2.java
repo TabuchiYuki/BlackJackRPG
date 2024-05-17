@@ -5,15 +5,15 @@ package programs.data;
  * @author 田淵勇輝
  */
 public class Vector2 {
-	private float x;
-	private float y;
+	private double x;
+	private double y;
 	
 	/**
 	 * X軸とY軸を初期化するコンストラクタ
 	 * @param x X軸の値
 	 * @param y Y軸の値
 	 */
-	public Vector2(float x, float y) {
+	public Vector2(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -23,26 +23,26 @@ public class Vector2 {
 	 * @see {@link #x}
 	 * @return X軸の値
 	 */
-	public float getX() { return x; }
+	public double getX() { return x; }
 	/**
 	 * Y軸のゲッター
 	 * @see {@link #y}
 	 * @return Y軸の値
 	 */
-	public float getY() { return y; }
+	public double getY() { return y; }
 	
 	/**
 	 * X軸のセッター
 	 * @see {@link #x}
 	 * @param x X軸の値
 	 */
-	public void setX(float x) { this.x = x; }
+	public void setX(double x) { this.x = x; }
 	/**
 	 * Y軸のセッター
 	 * @see {@link #y}
 	 * @param y Y軸の値
 	 */
-	public void setY(float y) { this.y = y; }
+	public void setY(double y) { this.y = y; }
 	
 	// 以下静的メソッド
 	
