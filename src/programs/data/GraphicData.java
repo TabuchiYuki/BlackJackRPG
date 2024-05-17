@@ -153,32 +153,59 @@ public class GraphicData {
 	 */
 	public void setShear(Vector2 shear) { this.shear = shear; }
 	
+	/**
+	 * ピボットを加算
+	 * @param piv ピボットに加算する値
+	 */
 	public void addPivot(Vector2 piv) {
 		pivot.setX(pivot.getX() + piv.getX());
 		pivot.setY(pivot.getY() + piv.getY());
 	}
 	
+	/**
+	 * 座標を加算
+	 * @param pos 座標に加算する値
+	 */
 	public void addPosition(Vector2 pos) {
 		position.setX(position.getX() + pos.getX());
 		position.setY(position.getY() + pos.getY());
 	}
 	
+	/**
+	 * 拡大率を加算
+	 * @param sca 拡大率に加算する値
+	 */
 	public void addScale(Vector2 sca) {
 		scale.setX(scale.getX() + sca.getX());
 		scale.setY(scale.getY() + sca.getY());
 	}
 	
+	/**
+	 * 回転角(度数法)を加算
+	 * @param rot 回転角(度数法)に加算する値
+	 */
 	public void addRotation(double rot) {
 		rotation += rot;
 		rotation = circle(rotation, 0.0d, 360.0d);
 		radian = Math.toRadians(rotation);
 	}
 	
+	/**
+	 * せん断を加算
+	 * @param shr せん断に加算する値
+	 */
 	public void addShear(Vector2 shr) {
 		shear.setX(shear.getX() + shr.getX());
 		shear.setY(shear.getY() + shr.getY());
 	}
 	
+	/**
+	 * 値の正規化
+	 * @param value 正規化する値
+	 * @param min 最小値
+	 * @param max 最大値
+	 * @return 正規化された値
+	 */
 	private double circle(double value, double min, double max) {
 		double range = max - min;
 		double normalized = (value - min) % range;

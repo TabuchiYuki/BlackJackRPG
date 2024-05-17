@@ -13,6 +13,11 @@ import programs.data.GraphicData;
 public class GraphicDrawer extends JPanel {
 	private List<GraphicData> graphicDataList = new ArrayList<GraphicData>();
 	
+	/**
+	 * グラフィックデータのリストのゲッター
+	 * @see {@link #graphicDataList}
+	 * @return グラフィックデータのリスト
+	 */
 	public List<GraphicData> getGraphicData() { return graphicDataList; }
 	
 	@Override
@@ -23,6 +28,12 @@ public class GraphicDrawer extends JPanel {
         }
     }
 	
+	/**
+	 * 画像を変形
+	 * アフィン変換を用いた変形を行う
+	 * @param g2d グラフィック
+	 * @param gd グラフィックデータ
+	 */
 	private void transformImage(Graphics2D g2d, GraphicData gd) {
 		AffineTransform at = g2d.getTransform();
 		// ピボット位置に移動
