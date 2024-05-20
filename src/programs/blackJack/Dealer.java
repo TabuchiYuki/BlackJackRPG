@@ -1,52 +1,36 @@
-//Dealer.java
 package programs.blackJack;
 
 /**
  * ブラックジャックのディーラーを表すクラスです。
- * ディーラーは手札を持ち、カードを引いたり、スタンドする処理を管理します。
- * @author 菅原 凜 
+ * ディーラーは手札を持ち、ゲームのルールに基づきカードを引くかスタンドします。
+ * @author 菅原 凜
  */
-public class Dealer {
-    private Hand hand; // ディーラーの手札
+public class Dealer implements PlayerActions {
+    private Hand hand;
 
-    /**
-     * ディーラーのインスタンスを初期化します。
-     */
     public Dealer() {
         hand = new Hand();
     }
 
-    /**
-     * ディーラーの手札を取得します。
-     * @return ディーラーの持っている手札
-     */
-    public Hand getHand() {
-        return hand;
+    @Override
+    public void hit(Deck deck) {
+        // ディーラーのカード引きルールを実装
+        // 例: ディーラーの手札が16以下の場合にカードを引く
+        if (getHand().calculateHandValue() <= 16) {
+            Card drawnCard = deck.drawCard();
+            if (drawnCard != null) {
+                hand.addCard(drawnCard);
+            }
+        }
     }
 
-    /**
-     * ディーラーがカードを引く処理を行います。
-     */
-    public void hit() {
-        // ディーラーがカードを引く処理
-        // ここに実際のカードをデッキから手札に追加するロジックを記述
-    }
-
-    /**
-     * ディーラーがスタンドする処理を行います。
-     * スタンドすると、ディーラーはこれ以上カードを引かずに現在の手札で勝負します。
-     */
+    @Override
     public void stand() {
         // ディーラーがスタンドする処理
-        // ここにスタンドした場合のロジックを記述
     }
 
-    /**
-     * プレイヤーに初期のカードを2枚配る処理を行います。
-     * @param player カードを配る対象のプレイヤー
-     */
-    public void dealInitialCards(Player player) {
-        // 初期のカードを配る処理
-        // ここにプレイヤーに2枚のカードを配るロジックを記述
+    @Override
+    public Hand getHand() {
+        return hand;
     }
 }
