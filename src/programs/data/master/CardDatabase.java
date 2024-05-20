@@ -1,14 +1,34 @@
 package programs.data.master;
 
-import programs.system.Singleton;
+import java.util.Objects;
 
 /**
  * すべてのカードのデータベース
  * @see スーパークラス:{@link programs.system.Singleton Singleton}
  * @author 進藤颯斗
  */
-public class CardDatabase extends Singleton<CardDatabase> {
+public class CardDatabase {
+	private static CardDatabase instance;
 	private Card[] cards;
+	
+	/**
+	 * プライベートコンストラクタ
+	 */
+	private CardDatabase() {
+		init();
+	}
+	
+	/**
+	 * インスタンスのゲッター
+	 * @see {@link #instance}
+	 * @return インスタンス
+	 */
+	public static CardDatabase getInstance() {
+		if(Objects.isNull(instance)) {
+			instance = new CardDatabase();
+		}
+		return instance;
+	}
 	
 	/**
 	 * カードのゲッター
@@ -20,7 +40,7 @@ public class CardDatabase extends Singleton<CardDatabase> {
 	/**
 	 * カードのデータを初期化
 	 */
-	public CardDatabase() {
+	public void init() {
 		cards = new Card[52];
 		
 		for(int i = 0; i < 4; i++) {
