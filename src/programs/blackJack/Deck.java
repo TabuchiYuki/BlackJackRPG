@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * ブラックジャックのカードデッキを表すクラスです。
  * このデッキはカードのリストを管理し、カードをシャッフルおよびドローする機能を提供します。
- * @author 菅原
+* @author 菅原 凜
  */
 public class Deck {
     private List<Card> cards; // デッキ内のカード

@@ -1,4 +1,3 @@
-//Player.java
 package programs.blackJack;
 
 /**
@@ -6,41 +5,28 @@ package programs.blackJack;
  * プレイヤーは手札を持ち、ゲーム中にカードを引くかスタンドするかを選択します。
  * @author 菅原 凜
  */
-public class Player {
-    private Hand hand; // プレイヤーの手札
+public class Player implements PlayerActions {
+    private Hand hand;
 
-    /**
-     * プレイヤーのインスタンスを初期化します。
-     */
     public Player() {
         hand = new Hand();
     }
 
-    /**
-     * プレイヤーの手札を取得します。
-     * @return プレイヤーの持っている手札
-     */
-    public Hand getHand() {
-        return hand;
-    }
-
-    /**
-     * プレイヤーがカードを引く処理を行います。
-     * このメソッドはデッキからカードを一枚引き、プレイヤーの手札に追加します。
-     * @param deck ゲームのデッキ
-     */
+    @Override
     public void hit(Deck deck) {
-        Card drawnCard = deck.drawCard(); // デッキからカードを一枚引く
+        Card drawnCard = deck.drawCard();
         if (drawnCard != null) {
-            hand.addCard(drawnCard); // 手札にカードを追加
+            hand.addCard(drawnCard);
         }
     }
 
-    /**
-     * プレイヤーがスタンドする処理を行います。
-     * スタンドすると、プレイヤーはこれ以上カードを引かずに現在の手札で勝負します。
-     */
+    @Override
     public void stand() {
-        // スタンド処理をここに記述
+        // プレイヤーがスタンドする処理
+    }
+
+    @Override
+    public Hand getHand() {
+        return hand;
     }
 }
