@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 
 import programs.data.GraphicData;
 import programs.data.Vector2;
+import programs.system.ExcelLoader;
 import programs.system.ImageLoader;
 
 /**
@@ -19,6 +20,10 @@ public class GameManager {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception  {
+		int dummy = ExcelLoader.getInstance().loadExcelData("dummy", 0, 0, 0);
+		System.out.println(dummy);
+		
+		
 		final int REFRESH_RATE = 30;
 		final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
 		
