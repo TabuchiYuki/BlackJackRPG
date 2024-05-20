@@ -6,6 +6,6 @@ package programs.data.master;
  * @param number 番号
  * @author 進藤颯斗
  */
-public record Card(CardSuit suit, int number) {
+public record Card(CardSuit suit, int rank) {
 
 }
