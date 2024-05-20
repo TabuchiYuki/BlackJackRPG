@@ -1,12 +1,6 @@
 package programs.manager;
 
-import java.awt.image.BufferedImage;
-
-import javax.swing.SwingUtilities;
-
-import programs.data.GraphicData;
-import programs.data.Vector2;
-import programs.system.ImageLoader;
+import programs.system.ExcelLoader;
 
 /**
  * ゲーム進行を管理するマネージャークラス
@@ -19,7 +13,7 @@ public class GameManager {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception  {
-		final int REFRESH_RATE = 30;
+		/*final int REFRESH_RATE = 30;
 		final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
 		
 		GraphicManager graMgr = GraphicManager.getInstance();
@@ -45,6 +39,9 @@ public class GameManager {
 			Thread.sleep(1000/REFRESH_RATE);
 			graphic1.addRotation(30.0d * REFRESH_TIME);
 			graMgr.repaint();
-		}
+		}*/
+		
+		int dummy = ExcelLoader.getInstance().loadExcelData("dummy", 0, 0, 0);
+		System.out.println(dummy);
 	}
 }
