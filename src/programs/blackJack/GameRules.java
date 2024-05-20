@@ -1,27 +1,34 @@
 package programs.blackJack;
 
+import programs.data.BlackJackResult;
+
+/**
+ * ブラックジャックの勝敗を判定するクラスです。
+ * プレイヤーとディーラーの手札を比較して勝敗を決定します。
+ * @author 菅原 凜
+ */
 public class GameRules {
 
     /**
      * プレイヤーとディーラーの手札を比較して勝敗を判定します。
      * @param playerHand プレイヤーの手札
      * @param dealerHand ディーラーの手札
-     * @return 勝敗結果の文字列 ("Win", "Lose", "Draw")
+     * @return 勝敗結果の列挙型 (BlackJackResult)
      */
-    public static String determineWinner(Hand playerHand, Hand dealerHand) {
+    public static BlackJackResult determineWinner(Hand playerHand, Hand dealerHand) {
         int playerScore = playerHand.calculateHandValue();
         int dealerScore = dealerHand.calculateHandValue();
 
         if (playerScore > 21) {
-            return "Lose";  // プレイヤーがバスト
+            return BlackJackResult.DEFEAT;  // プレイヤーがバスト
         } else if (dealerScore > 21) {
-            return "Win";  // ディーラーがバスト
+            return BlackJackResult.VICTORY;  // ディーラーがバスト
         } else if (playerScore > dealerScore) {
-            return "Win";  // プレイヤーのスコアが高い
+            return BlackJackResult.VICTORY;  // プレイヤーのスコアが高い
         } else if (playerScore < dealerScore) {
-            return "Lose"; // ディーラーのスコアが高い
+            return BlackJackResult.DEFEAT; // ディーラーのスコアが高い
         } else {
-            return "Draw";  // スコアが同じ
+            return BlackJackResult.DRAW;  // スコアが同じ
         }
     }
 }
