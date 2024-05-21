@@ -21,7 +21,7 @@ public class GameManager {
 	public static void main(String[] args) throws Exception  {
 		final int REFRESH_RATE = 30;
 		final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
-		
+    
 		GraphicManager graMgr = GraphicManager.getInstance();
 		
 		BufferedImage cardImage = ImageLoader.getInstance().loadImage("cards.png");
