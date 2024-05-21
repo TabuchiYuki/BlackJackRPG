@@ -21,7 +21,7 @@ public class CardDatabase {
 	/**
 	 * インスタンスのゲッター
 	 * @see {@link #instance}
-	 * @return
+	 * @return インスタンス
 	 */
 	public static CardDatabase getInstance() {
 		if(Objects.isNull(instance)) {

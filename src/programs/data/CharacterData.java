@@ -62,35 +62,24 @@ public class CharacterData {
 	 * スコアの更新
 	 */
 	public void updateScore() {
-		boolean[] ace = new boolean[cards.size()];
+		int aceCount = 0;
 		score = 0;
 		
 		for(int i = 0; i < cards.size(); i++) {
-			int number = cards.get(i).number();
-			if(number == 1) {
+			int rank = cards.get(i).rank();
+			if(rank == 1) {
 				score += 11;
-				ace[i] = true;
-			} else if (number < 10) {
-				score += number;
-			} else {
+				aceCount++;
+			} else if (rank > 10) {
 				score += 10;
+			} else {
+				score += rank;
 			}
 		}
 		
-		boolean changeAce = score > 21;
-		
-		while(changeAce) {
-			for(int i = 0; i < cards.size(); i++) {
-				changeAce = ace[i];
-				if(changeAce) {
-					ace[i] = false;
-					score -= 10;
-					if(score <= 21) {
-						changeAce = false;
-					}
-					break;
-				}
-			}
+		while(score > 21 && aceCount >= 1) {
+			score -= 10;
+			aceCount--;
 		}
 	}
 }
