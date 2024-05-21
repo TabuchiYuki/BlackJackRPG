@@ -10,7 +10,7 @@ import java.util.List;
  * @author 菅原 凜
  */
 public class Hand {
-    private List<Card> cards; // 手札のカードリスト
+    private List<BlackJackCard> cards; // 手札のカードリスト
 
     /**
      * 手札を初期化するコンストラクタです。
@@ -23,7 +23,7 @@ public class Hand {
      * 手札にカードを追加します。
      * @param card 追加するカードオブジェクト
      */
-    public void addCard(Card card) {
+    public void addCard(BlackJackCard card) {
         cards.add(card); // 新しいカードを手札に追加
     }
 
@@ -36,7 +36,7 @@ public class Hand {
         int totalValue = 0;
         int aceCount = 0;  // エースのカードの数を数える
 
-        for (Card card : cards) {
+        for (BlackJackCard card : cards) {
             int rank = card.getRank();
             if (rank == 1) {
                 totalValue += 11; // エースはとりあえず11として加算

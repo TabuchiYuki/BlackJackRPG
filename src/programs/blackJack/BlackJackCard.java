@@ -6,7 +6,7 @@ import programs.data.master.CardSuit;
  * 
  * @author 菅原 凜
  */
-public class Card {
+public class BlackJackCard {
     private CardSuit suit; // カードのスート
     private int rank;      // カードのランク
 
@@ -15,7 +15,7 @@ public class Card {
      * @param suit カードのスートを指定します。
      * @param rank カードのランクを指定します。
      */
-    public Card(CardSuit suit, int rank) {
+    public BlackJackCard(CardSuit suit, int rank) {
         this.suit = suit;
         this.rank = rank;
     }

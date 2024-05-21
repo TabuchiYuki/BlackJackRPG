@@ -17,7 +17,7 @@ public class Dealer implements PlayerActions {
         // ディーラーのカード引きルールを実装
         // 例: ディーラーの手札が16以下の場合にカードを引く
         if (getHand().calculateHandValue() <= 16) {
-            Card drawnCard = deck.drawCard();
+            BlackJackCard drawnCard = deck.drawCard();
             if (drawnCard != null) {
                 hand.addCard(drawnCard);
             }

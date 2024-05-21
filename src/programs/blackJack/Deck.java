@@ -11,7 +11,7 @@ import java.util.List;
 * @author 菅原 凜
  */
 public class Deck {
-    private List<Card> cards; // デッキ内のカード
+    private List<BlackJackCard> cards; // デッキ内のカード
 
     /**
      * デッキを初期化し、カードを生成してシャッフルします。
@@ -41,7 +41,7 @@ public class Deck {
      * デッキからカードを一枚引きます。
      * @return 引いたカード。デッキが空の場合はnullを返します。
      */
-    public Card drawCard() {
+    public BlackJackCard drawCard() {
         if (cards.isEmpty()) {
             return null;  // デッキが空の場合はnullを返す
         }
