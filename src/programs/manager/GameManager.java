@@ -6,8 +6,6 @@ import javax.swing.SwingUtilities;
 
 import programs.data.GraphicData;
 import programs.data.Vector2;
-import programs.system.ExcelLoader;
-import programs.system.FontLoader;
 import programs.system.ImageLoader;
 
 /**
@@ -23,13 +21,9 @@ public class GameManager {
 	public static void main(String[] args) throws Exception  {
 		final int REFRESH_RATE = 30;
 		final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
-		
-		int dummy = ExcelLoader.getInstance().loadExcelData("dummy", 0, 0, 0);
-		System.out.println(dummy);
-		
+    
 		GraphicManager graMgr = GraphicManager.getInstance();
 		
-		FontLoader.getInstance().loadAndAddFontList("Algerian Condensed Std Regular");
 		BufferedImage cardImage = ImageLoader.getInstance().loadImage("cards.png");
 		
 		BufferedImage card1 = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 2, 12);
