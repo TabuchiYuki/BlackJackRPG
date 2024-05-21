@@ -2,10 +2,11 @@ package programs.system;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -21,7 +22,11 @@ public class ExcelLoader {
 	private final String CLASS_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 	private final String EXCEL_PROJECT_EXTEND = ".xlsx";
 	
+	// 静的フィールド
 	private static ExcelLoader instance;
+	
+	// フィールド
+	private List<Workbook> excels = new ArrayList<Workbook>();
 	
 	/**
 	 * プライベートコンストラクタ
@@ -39,20 +44,20 @@ public class ExcelLoader {
 		}
 		return instance;
 	}
+	/**
+	 * Excelデータリストのゲッター
+	 * @see {@link #excels}
+	 * @return Excelデータリスト
+	 */
+	public List<Workbook> getExcels() { return excels; }
 	
 	/**
 	 * Excelデータを読み込む
 	 * @param fileName ファイル名
-	 * @param sheet シートの番号
-	 * @param rowIndex 行の番号
-	 * @param columnIndex 列の番号
-	 * @return 取得した値
+	 * @return 取得したExcelデータ
 	 */
-	public int loadExcelData(String fileName, int sheet, int rowIndex, int columnIndex) {
+	public Workbook loadExcelData(String fileName) {
 		Workbook wb;
-		Sheet sh;
-		Row row;
-		Cell cell;
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(CLASS_PATH);
@@ -64,16 +69,39 @@ public class ExcelLoader {
 		
 		try(InputStream ist = new FileInputStream(path)) {
 			wb = WorkbookFactory.create(ist);
-			sh = wb.getSheetAt(sheet);
-			row = sh.getRow(rowIndex);
-			cell = row.getCell(columnIndex);
-			
-			if(cell.getCellType() == CellType.NUMERIC) {
-				return (int) cell.getNumericCellValue();
-			}
+			return wb;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return -1;
+		return null;
+	}
+	
+	/**
+	 * Excelデータからセルを取り出す
+	 * @param wb Excelデータ
+	 * @param sheet シートのインデックス番号
+	 * @param rowIndex 行のインデックス番号
+	 * @param columnIndex 列のインデックス番号
+	 * @return 取り出したセル
+	 */
+	public Cell getCell(Workbook wb, int sheet, int rowIndex, int columnIndex) {
+		Sheet sh;
+		Row row;
+		Cell cell;
+		
+		sh = wb.getSheetAt(sheet);
+		row = sh.getRow(rowIndex);
+		cell = row.getCell(columnIndex);
+		
+		return cell;
+	}
+	
+	/**
+	 * Excelデータを読み込み、リストに追加する
+	 * @param fileName ファイル名
+	 */
+	public void loadAndAddExcelDataList(String fileName) {
+		Workbook wb = loadExcelData(fileName);
+		excels.add(wb);
 	}
 }
