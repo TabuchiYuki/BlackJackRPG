@@ -14,7 +14,7 @@ public class Player implements PlayerActions {
 
     @Override
     public void hit(Deck deck) {
-        Card drawnCard = deck.drawCard();
+        BlackJackCard drawnCard = deck.drawCard();
         if (drawnCard != null) {
             hand.addCard(drawnCard);
         }
