@@ -27,14 +27,31 @@ public class GameManager {
 		BufferedImage cardImage = ImageLoader.getInstance().loadImage("cards.png");
 		
 		BufferedImage bg = ImageLoader.getInstance().loadImage("BackGround.png");
-		BufferedImage card1 = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 2, 12);
-		BufferedImage card2 = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 0, 3);
+		BufferedImage cardFrame = ImageLoader.getInstance().loadImage("trumpframe.png");
+		BufferedImage card1 = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 1, 2);
+		BufferedImage card2 = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 3, 3);
+		BufferedImage card3 = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 0, 0);
+		BufferedImage card4 = ImageLoader.getInstance().imageSplit(cardImage, 5, 13, 1, 12);
+		
 		GraphicData bgGra = new GraphicData(bg, -1, new Vector2(0.0d, 0.0d), new Vector2(0.0d, 0.0d), new Vector2(1.0d, 1.0d), 0.0d, new Vector2(0.0d, 0.0d), true);
-		GraphicData graphic1 = new GraphicData(card1, 2, new Vector2(400.0d, 300.0d), new Vector2(0.5d, 0.5d), 0.0d, new Vector2(0.0d, 0.0d), true);
-		GraphicData graphic2 = new GraphicData(card2, 1, new Vector2(300.0d, 400.0d), new Vector2(0.5d, 0.5d), 180.0d, new Vector2(1.0d, 0.0d), true);
+		GraphicData frame1 = new GraphicData(cardFrame, 1, new Vector2(320.0d, 100.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		GraphicData frame2 = new GraphicData(cardFrame, 1, new Vector2(480.0d, 100.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		GraphicData frame3 = new GraphicData(cardFrame, 1, new Vector2(320.0d, 500.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		GraphicData frame4 = new GraphicData(cardFrame, 1, new Vector2(480.0d, 500.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		GraphicData c1 = new GraphicData(card1, 2, new Vector2(320.0d, 100.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		GraphicData c2 = new GraphicData(card2, 2, new Vector2(480.0d, 100.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		GraphicData c3 = new GraphicData(card3, 2, new Vector2(320.0d, 500.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		GraphicData c4 = new GraphicData(card4, 2, new Vector2(480.0d, 500.0d), new Vector2(0.3d, 0.3d), 0.0f, new Vector2(0.0d, 0.0d), true);
+		
 		graMgr.getGraphicData().add(bgGra);
-		graMgr.getGraphicData().add(graphic1);
-		graMgr.getGraphicData().add(graphic2);
+		graMgr.getGraphicData().add(frame1);
+		graMgr.getGraphicData().add(frame2);
+		graMgr.getGraphicData().add(frame3);
+		graMgr.getGraphicData().add(frame4);
+		graMgr.getGraphicData().add(c1);
+		graMgr.getGraphicData().add(c2);
+		graMgr.getGraphicData().add(c3);
+		graMgr.getGraphicData().add(c4);
 		graMgr.sortLayer();
 		
 		SwingUtilities.invokeLater(new Runnable() {
@@ -43,11 +60,5 @@ public class GameManager {
 		    	WindowManager.getInstance().getFrame().add(graMgr);
 		    }
 		});
-		
-		while(true) {
-			Thread.sleep(1000/REFRESH_RATE);
-			graphic1.addRotation(30.0d * REFRESH_TIME);
-			graMgr.repaint();
-		}
 	}
 }
