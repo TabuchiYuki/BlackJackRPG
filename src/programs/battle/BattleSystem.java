@@ -1,24 +1,31 @@
 package programs.battle;
 
+import programs.blackJack.GameRules;
 import programs.data.BlackJackResult;
 import programs.data.CharacterData;
+import programs.system.GameObject;
 
 /**
  * バトルシステム
  * @author 小川涼介
  */
-public class BattleSystem {
+public class BattleSystem implements GameObject {
 	private CharacterData player;
 	private CharacterData dealer;
+	
+	private GameRules gameRules;
 
 	/**
 	 * コンストラクタ
-	 * @param player プレイヤーデータ
-	 * @param dealer ディーラーデータ
+	 * @param playerHp プレイヤーの体力
+	 * @param playerAtk プレイヤーの攻撃力
+	 * @param dealerHp ディーラーの体力
+	 * @param dealerAtk ディーラーの攻撃力
 	 */
-	public BattleSystem(CharacterData player, CharacterData dealer) {
-		this.player = player;
-		this.dealer = dealer;
+	public BattleSystem(int playerHp, int playerAtk, int dealerHp, int dealerAtk) {
+		player = new CharacterData(playerHp, playerAtk);
+		dealer = new CharacterData(dealerHp, dealerAtk);
+		
 	}
 
 	/**
