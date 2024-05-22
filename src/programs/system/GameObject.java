@@ -10,7 +10,7 @@ public interface GameObject {
 	 */
 	default void init() { }
 	/**
-	 * マイフレームが呼ばれる
+	 * 毎フレーム呼ばれる
 	 */
 	default void update() { }
 }
