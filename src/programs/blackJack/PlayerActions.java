@@ -10,7 +10,7 @@ public interface PlayerActions {
      * ゲームのデッキからカードを一枚引き、手札に追加する行動を定義します。
      * @param deck ゲーム中のカードデッキ
      */
-    void hit(Deck deck);
+    void hit();
 
     /**
      * これ以上カードを引かずに現在の手札で勝負を決めるスタンドの行動を定義します。

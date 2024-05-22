@@ -3,15 +3,18 @@ package programs.blackJack;
 import programs.data.master.CardSuit;
 
 /**
+ * このクラスはブラックジャックのカードを表します。
  * 
+ * @deprecated 代わりに {@link programs.data.master.Card} クラスを使用してください。
  * @author 菅原 凜
  */
+@Deprecated
 public class BlackJackCard {
     private CardSuit suit; // カードのスート
     private int rank;      // カードのランク
 
     /**
-     * Card オブジェクトを初期化します。
+     * BlackJackCard オブジェクトを初期化します。
      * @param suit カードのスートを指定します。
      * @param rank カードのランクを指定します。
      */
