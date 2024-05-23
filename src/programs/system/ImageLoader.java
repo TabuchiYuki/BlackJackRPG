@@ -3,6 +3,8 @@ package programs.system;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
@@ -17,6 +19,8 @@ public class ImageLoader{
 	private final String CLASS_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 	
 	private static ImageLoader instance;
+	
+	private Map<String, BufferedImage> imagesMap = new HashMap<>();
 	
 	/**
 	 * プライベートコンストラクタ
@@ -34,6 +38,12 @@ public class ImageLoader{
 		}
 		return instance;
 	}
+	/**
+	 * 画像のデータマップのゲッター
+	 * @see {@link #imagesMap}
+	 * @return 画像のデータマップ
+	 */
+	public Map<String, BufferedImage> getImagesMap() { return imagesMap; }
 	
 	/**
 	 * 画像を取得
@@ -89,5 +99,19 @@ public class ImageLoader{
         
 		BufferedImage splitImage = img.getSubimage(startX, startY, splitWidth, splitHeight);
 		return splitImage;
+	}
+	
+	/**
+	 * 画像を読み込み、データマップに追加
+	 * @param name 画像のファイル名
+	 * @param key マップデータのキー
+	 */
+	public void loadAndAddImageMap(String name, String key) {
+		try {
+			BufferedImage image = loadImage(name);
+			imagesMap.put(key, image);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
