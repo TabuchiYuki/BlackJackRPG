@@ -1,5 +1,6 @@
 package programs.manager;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
@@ -11,6 +12,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import programs.data.GraphicData;
+import programs.data.TextGraphicData;
 import programs.data.Vector2;
 import programs.system.ExcelLoader;
 import programs.system.FontLoader;
@@ -36,7 +38,9 @@ public class GameManager {
 		
 		BufferedImage joker = ImageLoader.getInstance().loadImage("card_joker.png");
 		GraphicData jokerGra = new GraphicData(joker, 0, true);
-		graMgr.getGraphicData().add(jokerGra);
+		graMgr.getGraphicDataList().add(jokerGra);
+		TextGraphicData loadText = new TextGraphicData("Now Loading", 24, new Vector2(520.0d, 550.0d), Color.BLACK);
+		graMgr.getTextDataList().add(loadText);
 		
 		WindowManager.getInstance().createWindow("Black Jack Quest", 800, 600);
 		WindowManager.getInstance().getFrame().add(graMgr);
@@ -58,10 +62,12 @@ public class GameManager {
 		
 		boolean jokerRotateHalfLoop = false;
 		double jokerRotateProgress = 0.0d;
+		double loadTextTimer = 0.0d;
 		
 		// 初期化処理中の処理
 		while(!worker.isDone()) {
 			try {
+				// 画像表示
 				if(jokerRotateHalfLoop) {
 					if(jokerRotateProgress <= -0.5d) {
 						jokerRotateHalfLoop = false;
@@ -80,6 +86,20 @@ public class GameManager {
 					jokerGra.setShear(new Vector2(0.0d, -0.15d + (0.3d * Math.abs(jokerRotateProgress))));
 				}
 				jokerGra.setScale(new Vector2(0.4d * jokerRotateProgress, 0.2d));
+				
+				// テキスト表示
+				if(loadTextTimer < 1.2d) {
+					String text = "Now Loading";
+					for(int i = 0; i < (int) (loadTextTimer / 0.3d); i++) {
+						text += ".";
+					}
+					loadText.setText(text);
+					loadTextTimer += REFRESH_TIME;
+				} else {
+					loadTextTimer -= 2.5d;
+				}
+				
+				// 描画
 				graMgr.repaint();
 				Thread.sleep(1000/REFRESH_RATE);
 			} catch (InterruptedException e) {
@@ -87,8 +107,8 @@ public class GameManager {
 			}
 		}
 		
-		graMgr.getGraphicData().clear();
-		jokerGra = null;
+		graMgr.getGraphicDataList().clear();
+		graMgr.getTextDataList().clear();
 		
 		/*
 		System.out.println(SaveManager.getInstance().getSaveData().getGrade());
