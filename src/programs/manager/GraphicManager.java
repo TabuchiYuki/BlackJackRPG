@@ -1,5 +1,6 @@
 package programs.manager;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import javax.swing.JPanel;
 
 import programs.data.GraphicData;
+import programs.data.TextGraphicData;
 
 /**
  * グラフィックの描画処理を行うクラス
@@ -18,7 +20,8 @@ import programs.data.GraphicData;
  */
 public class GraphicManager extends JPanel {
 	private static GraphicManager instance;
-	private List<GraphicData> graphicDataList = new ArrayList<GraphicData>();
+	private List<GraphicData> graphicDataList = new ArrayList<>();
+	private List<TextGraphicData> textDataList = new ArrayList<>();
 	
 	/**
 	 * プライベートコンストラクタ
@@ -42,17 +45,39 @@ public class GraphicManager extends JPanel {
 	 * @see {@link #graphicDataList}
 	 * @return グラフィックデータのリスト
 	 */
-	public List<GraphicData> getGraphicData() { return graphicDataList; }
+	public List<GraphicData> getGraphicDataList() { return graphicDataList; }
+	/**
+	 * テキストグラフィックデータのリストのゲッター
+	 * @see {@link #textDataList}
+	 * @return テキストグラフィックデータのリスト
+	 */
+	public List<TextGraphicData> getTextDataList() { return textDataList; }
 	
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
-        for(int i = 0; i < graphicDataList.size(); i++) {
-        	if(graphicDataList.get(i).isShow()) {
-        		transformImage(g2d, graphicDataList.get(i));
+        
+        graphicDataList.forEach(gd -> {
+        	if(gd.isShow()) {
+        		transformImage(g2d, gd);
         	}
-        }
+        });
+        
+        textDataList.forEach(td -> {
+        	Font font = td.getFont();
+        	g2d.setFont(font);
+        	g2d.setColor(td.getColor());
+        	
+        	AffineTransform at = g2d.getTransform();
+    		// 行列を初期化
+    		at.setToIdentity();
+    		// 移動
+    		at.translate(td.getPosition().getX(), td.getPosition().getY());
+    		
+    		g2d.setTransform(at);
+        	g2d.drawString(td.getText(), 0, 0);
+        });
     }
 	
 	/**

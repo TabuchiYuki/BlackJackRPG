@@ -1,5 +1,6 @@
 package programs.data;
 
+import java.awt.Color;
 import java.awt.Font;
 
 public class TextGraphicData {
@@ -7,19 +8,38 @@ public class TextGraphicData {
 	private Font font;
 	private int size;
 	private Vector2 position;
+	private Color color;
 	
 	/**
-	 * コンストラクタ
+	 * 全て初期化するコンストラクタ
 	 * @param text 表示する文字列
 	 * @param font フォント
 	 * @param size フォントサイズ
 	 * @param position 表示位置
+	 * @param color 文字色
 	 */
-	public TextGraphicData(String text, Font font, int size, Vector2 position) {
+	public TextGraphicData(String text, Font font, int size, Vector2 position, Color color) {
 		this.text = text;
 		this.font = font.deriveFont(size);
 		this.size = size;
 		this.position = position;
+		this.color = color;
+	}
+	
+	/**
+	 * コンストラクタ
+	 * フォントは自動的にArialになります
+	 * @param text 表示する文字列
+	 * @param size フォントサイズ
+	 * @param position 表示位置
+	 * @param color 文字色
+	 */
+	public TextGraphicData(String text, int size, Vector2 position, Color color) {
+		this.text = text;
+		font = new Font("Arial", Font.PLAIN, size);
+		this.size = size;
+		this.position = position;
+		this.color = color;
 	}
 	
 	/**
@@ -46,6 +66,12 @@ public class TextGraphicData {
 	 * @return 表示位置
 	 */
 	public Vector2 getPosition() { return position; }
+	/**
+	 * 文字色のゲッター
+	 * @see {@link #color}
+	 * @return
+	 */
+	public Color getColor() { return color; }
 	
 	/**
 	 * 文字列のセッター
@@ -68,6 +94,12 @@ public class TextGraphicData {
 	 * @param position 表示位置
 	 */
 	public void setPosition(Vector2 position) { this.position = position; }
+	/**
+	 * 文字色のセッター
+	 * @see {@link #color}
+	 * @param color 文字色
+	 */
+	public void setColor(Color color) { this.color = color; }
 	
 	/**
 	 * 座標を加算
