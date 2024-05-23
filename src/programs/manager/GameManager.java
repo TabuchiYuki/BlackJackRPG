@@ -1,15 +1,19 @@
 package programs.manager;
 
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 
 import javax.swing.SwingWorker;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import programs.data.GraphicData;
 import programs.data.Vector2;
 import programs.system.ExcelLoader;
+import programs.system.FontLoader;
 import programs.system.ImageLoader;
 
 /**
@@ -37,18 +41,11 @@ public class GameManager {
 		WindowManager.getInstance().createWindow("Black Jack Quest", 800, 600);
 		WindowManager.getInstance().getFrame().add(graMgr);
 		
+		// マルチスレッドで初期化処理を行う
 		SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
 			@Override
 			protected String doInBackground() {
-				// 初期化処理はここで行う
-				Workbook initData = ExcelLoader.getInstance().loadExcelData("InitializeData");
-				Sheet imageSheet = initData.getSheetAt(0);
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO 自動生成された catch ブロック
-					e.printStackTrace();
-				}
+				initLoad();
 		    	return "show window";
 			}
 		};
@@ -93,6 +90,13 @@ public class GameManager {
 		graMgr.getGraphicData().clear();
 		jokerGra = null;
 		
+		/*
+		System.out.println(SaveManager.getInstance().getSaveData().getGrade());
+		SaveManager.getInstance().getSaveData().setGrade(DifficultyGrade.MIDDLE);
+		SaveManager.getInstance().save();
+		System.out.println(SaveManager.getInstance().getSaveData().getGrade());
+		*/
+		
 		// ゲーム処理
 		try {
 			
@@ -102,5 +106,70 @@ public class GameManager {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * 初期化ロード
+	 */
+	private static void initLoad() {
+		Workbook initData = ExcelLoader.getInstance().loadExcelData("InitializeData");
+		Sheet imageSheet = initData.getSheetAt(0);
+		boolean zeroRow = true;
+		
+		// 画像ロード
+		Iterator<Row> rows = imageSheet.rowIterator();
+		while(rows.hasNext()) {
+			Row row = rows.next();
+			
+			if(zeroRow) {
+				zeroRow = false;
+				continue;
+			}
+			
+			Cell fileNameCell = row.getCell(0);
+			Cell keyNameCell = row.getCell(1);
+			
+			ImageLoader.getInstance().loadAndAddImageMap(fileNameCell.getStringCellValue(), keyNameCell.getStringCellValue());
+		}
+		
+		Sheet fontSheet = initData.getSheetAt(1);
+		zeroRow = true;
+		
+		// フォントロード
+		rows = fontSheet.rowIterator();
+		while(rows.hasNext()) {
+			Row row = rows.next();
+			
+			if(zeroRow) {
+				zeroRow = false;
+				continue;
+			}
+			
+			Cell fileNameCell = row.getCell(0);
+			
+			FontLoader.getInstance().loadAndAddFontList(fileNameCell.getStringCellValue());
+		}
+		
+		
+		Sheet sceneSheet = initData.getSheetAt(2);
+		zeroRow = true;
+		
+		// シーンデータロード
+		rows = sceneSheet.rowIterator();
+		while(rows.hasNext()) {
+			Row row = rows.next();
+			
+			if(zeroRow) {
+				zeroRow = false;
+				continue;
+			}
+			
+			Cell nameCell = row.getCell(0);
+			
+			ExcelLoader.getInstance().loadAndAddExcelDataList(nameCell.getStringCellValue());
+		}
+		
+		// セーブデータロード
+		SaveManager.getInstance().load();
 	}
 }

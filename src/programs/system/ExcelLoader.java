@@ -26,7 +26,7 @@ public class ExcelLoader {
 	private static ExcelLoader instance;
 	
 	// フィールド
-	private List<Workbook> excels = new ArrayList<Workbook>();
+	private List<Workbook> excels = new ArrayList<>();
 	
 	/**
 	 * プライベートコンストラクタ
