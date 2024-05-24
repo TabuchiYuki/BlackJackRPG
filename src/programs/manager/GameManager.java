@@ -3,6 +3,7 @@ package programs.manager;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.SwingWorker;
 
@@ -11,6 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import programs.data.ClickEventData;
 import programs.data.GraphicData;
 import programs.data.TextGraphicData;
 import programs.data.Vector2;
@@ -26,6 +28,11 @@ public class GameManager {
 	private static final int REFRESH_RATE = 30;
 	private static final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
 	
+	/**
+	 * リフレッシュタイムのゲッター
+	 * @see {@link #REFRESH_TIME}
+	 * @return リフレッシュタイム
+	 */
 	public double getRefreshTime() { return REFRESH_TIME; }
 	
 	/**
@@ -117,14 +124,30 @@ public class GameManager {
 		System.out.println(SaveManager.getInstance().getSaveData().getGrade());
 		*/
 		
+		// 0番目のシーンをロードする
+		SceneManager.getInstance().loadScene(0);
+		
 		// ゲーム処理
-		try {
-			
-			// 描画更新
-			graMgr.repaint();
-			Thread.sleep(1000/REFRESH_RATE);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		while(true) {
+			try {
+				// クリックイベントの更新メソッドを呼び出す
+				Map<String,ClickEventData> clickEvents = ClickEventManager.getInstance().getClickEventsMap();
+				clickEvents.forEach((k, v) ->{
+					v.update();
+				});
+				
+				// ゲームオブジェクトの初期化メソッドと更新メソッドを呼び出す
+				if(SceneManager.getInstance().isFirstFrame()) {
+					SceneManager.getInstance().callInit();
+				}
+				SceneManager.getInstance().callUpdate();
+				
+				// 描画更新
+				graMgr.repaint();
+				Thread.sleep(1000/REFRESH_RATE);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

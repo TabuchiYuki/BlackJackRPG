@@ -7,6 +7,7 @@ import programs.system.GameObject;
 
 /**
  * バトルシステム
+ * @see インターフェース:{@link programs.system.GameObject}
  * @author 小川涼介
  */
 public class BattleSystem implements GameObject {
@@ -22,10 +23,18 @@ public class BattleSystem implements GameObject {
 	 * @param dealerHp ディーラーの体力
 	 * @param dealerAtk ディーラーの攻撃力
 	 */
-	public BattleSystem(int playerHp, int playerAtk, int dealerHp, int dealerAtk) {
-		player = new CharacterData(playerHp, playerAtk);
-		dealer = new CharacterData(dealerHp, dealerAtk);
+	public BattleSystem(double playerHp, double playerAtk, double dealerHp, double dealerAtk) {
+		player = new CharacterData((int) playerHp, (int) playerAtk);
+		dealer = new CharacterData((int) dealerHp, (int) dealerAtk);
 		
+	}
+	
+	@Override
+	public void init() {
+		System.out.println(player.getHp());
+		System.out.println(player.getAtk());
+		System.out.println(dealer.getHp());
+		System.out.println(dealer.getAtk());
 	}
 
 	/**
