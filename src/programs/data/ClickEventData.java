@@ -1,5 +1,9 @@
 package programs.data;
 
+/**
+ * クリックイベントのデータ
+ * @author 田淵勇輝
+ */
 public class ClickEventData {
 	private boolean clicked = false;
 	private boolean prevClicked = false;

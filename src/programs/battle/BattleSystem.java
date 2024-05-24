@@ -7,6 +7,7 @@ import programs.system.GameObject;
 
 /**
  * バトルシステム
+ * @see インターフェース:{@link programs.system.GameObject}
  * @author 小川涼介
  */
 public class BattleSystem implements GameObject {

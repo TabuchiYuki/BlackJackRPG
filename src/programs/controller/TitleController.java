@@ -4,6 +4,11 @@ import programs.data.ClickEventData;
 import programs.manager.ClickEventManager;
 import programs.system.GameObject;
 
+/**
+ * タイトル画面のコントローラー
+ * @see インターフェース:{@link programs.system.GameObject}
+ * @author 田淵勇輝
+ */
 public class TitleController implements GameObject {
 	private ClickEventData clickEvent;
 	

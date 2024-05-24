@@ -13,6 +13,10 @@ import javax.swing.JFrame;
 
 import programs.data.ClickEventData;
 
+/**
+ * クリックイベントを制御するクラス
+ * @author 田淵勇輝
+ */
 public class ClickEventManager {
 	private static ClickEventManager instance;
 	
