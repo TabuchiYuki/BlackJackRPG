@@ -14,7 +14,6 @@ public class TitleController implements GameObject {
 	
 	@Override
 	public void init() {
-		System.out.println("title");
 		clickEvent = ClickEventManager.getInstance().getClickEventsMap().get("TitleClick");
 	}
 	

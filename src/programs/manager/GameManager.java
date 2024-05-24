@@ -27,6 +27,7 @@ import programs.system.ImageLoader;
 public class GameManager {
 	private static final int REFRESH_RATE = 30;
 	private static final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
+	private static final int FIRST_LOAD_SCENE_INDEX = 0;
 	
 	/**
 	 * リフレッシュタイムのゲッター
@@ -103,7 +104,7 @@ public class GameManager {
 					loadText.setText(text);
 					loadTextTimer += REFRESH_TIME;
 				} else {
-					loadTextTimer -= 2.5d;
+					loadTextTimer -= 1.2d;
 				}
 				
 				// 描画
@@ -124,8 +125,8 @@ public class GameManager {
 		System.out.println(SaveManager.getInstance().getSaveData().getGrade());
 		*/
 		
-		// 0番目のシーンをロードする
-		SceneManager.getInstance().loadScene(0);
+		// 最初のシーンをロードする
+		SceneManager.getInstance().loadScene(FIRST_LOAD_SCENE_INDEX);
 		
 		// ゲーム処理
 		while(true) {
