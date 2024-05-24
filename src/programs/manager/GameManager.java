@@ -50,8 +50,8 @@ public class GameManager {
 		TextGraphicData loadText = new TextGraphicData("Now Loading", 24, new Vector2(520.0d, 550.0d), Color.BLACK);
 		graMgr.getTextDataList().add(loadText);
 		
-		WindowManager.getInstance().createWindow("Black Jack Quest", 800, 600);
-		WindowManager.getInstance().getFrame().add(graMgr);
+		WindowManager.getInstance().getFrame().getContentPane().add(graMgr);
+		WindowManager.getInstance().createWindow("「21」～ギャンブラーの戦い～", 800, 600);
 		
 		// マルチスレッドで初期化処理を行う
 		SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {

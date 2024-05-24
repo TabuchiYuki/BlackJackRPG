@@ -15,7 +15,7 @@ public class WindowManager{
 	
 	private int width;
 	private int height;
-	private JFrame frame;
+	private JFrame frame = new JFrame();
 	
 	/**
 	 * プライベートコンストラクタ
@@ -72,35 +72,35 @@ public class WindowManager{
 	 * @param height 高さ
 	 */
 	private void createFrame(String title, int width, int height) {
-        frame = new JFrame(title);
-        
-        // ウィンドウを閉じた時に処理を終了する設定
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // ウィンドウのサイズを設定
-        frame.pack();
-        Insets insets = frame.getInsets();
-        frame.setSize(width + insets.left + insets.right - 160, height + insets.top + insets.bottom - 120);
-        
-        // ウィンドウのリサイズを禁止
-        frame.setResizable(false);
+		frame.setTitle(title);
+		
+		// ウィンドウを閉じた時に処理を終了する設定
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// ウィンドウのサイズを設定
+		frame.pack();
+		Insets insets = frame.getInsets();
+		frame.setSize(width + insets.left + insets.right - 160, height + insets.top + insets.bottom - 120);
+		
+		// ウィンドウのリサイズを禁止
+		frame.setResizable(false);
+		
+		// ウィンドウの表示位置を中央に設定
+		frame.setLocationRelativeTo(null);
+		
+		// ウィンドウを表示
+		frame.setVisible(true);
+	}
 
-        // ウィンドウの表示位置を中央に設定
-        frame.setLocationRelativeTo(null);
-        
-        // ウィンドウを表示
-        frame.setVisible(true);
-    }
-	
 	/**
 	 * アイコンを設定
 	 * @param image 画像データ
 	 */
 	public void setIcon(Image image) {
 		if (frame != null) {
-            frame.setIconImage(image);
-        } else {
-            System.err.println("Frame is not initialized. Cannot set icon.");
-        }
+			frame.setIconImage(image);
+		} else {
+			System.err.println("Frame is not initialized. Cannot set icon.");
+		}
 	}
 }
