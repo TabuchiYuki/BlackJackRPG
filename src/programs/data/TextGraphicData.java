@@ -3,6 +3,10 @@ package programs.data;
 import java.awt.Color;
 import java.awt.Font;
 
+/**
+ * テキストグラフィックのデータ
+ * @author 田淵勇輝
+ */
 public class TextGraphicData {
 	private String text;
 	private Font font;
