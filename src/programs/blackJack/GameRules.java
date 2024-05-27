@@ -1,6 +1,7 @@
 package programs.blackJack;
 
 import programs.data.BlackJackResult;
+import programs.data.CharacterData;
 
 /**
  * ブラックジャックの勝敗を判定するクラスです。
@@ -8,17 +9,28 @@ import programs.data.BlackJackResult;
  * @author 菅原 凜
  */
 public class GameRules {
-
+	private Deck deck;
+	private PlayerActions player;
+	private PlayerActions dealer;
+	
+	/**
+	 * 各種データの初期化を行うコンストラクタ
+	 * @param playerData プレイヤーのデータ
+	 * @param dealerData ディーラーのデータ
+	 */
+	public GameRules(CharacterData playerData, CharacterData dealerData) {
+		deck = new Deck();
+		player = new Player(deck, playerData);
+		dealer = new Dealer(deck, dealerData);
+	}
+	
     /**
      * プレイヤーとディーラーの手札を比較して勝敗を判定します。
      * @param playerHand プレイヤーの手札
      * @param dealerHand ディーラーの手札
      * @return 勝敗結果の列挙型 (BlackJackResult)
      */
-    public static BlackJackResult determineWinner(Hand playerHand, Hand dealerHand) {
-        int playerScore = playerHand.calculateHandValue();
-        int dealerScore = dealerHand.calculateHandValue();
-
+    public static BlackJackResult determineWinner(int playerScore, int dealerScore) {
         if (playerScore > 21) {
             return BlackJackResult.DEFEAT;  // プレイヤーがバスト
         } else if (dealerScore > 21) {

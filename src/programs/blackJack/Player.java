@@ -1,5 +1,6 @@
 package programs.blackJack;
 
+import programs.data.CharacterData;
 import programs.data.master.Card;
 
 /**
@@ -8,17 +9,25 @@ import programs.data.master.Card;
  * @author 菅原 凜
  */
 public class Player implements PlayerActions {
-    private Hand hand;
+    private CharacterData data;
     private Deck deck;
 
     /**
      * Player オブジェクトを初期化します。
      * @param deck このプレイヤーが使用するデッキ。
      */
-    public Player(Deck deck) {
+    public Player(Deck deck, CharacterData data) {
         this.deck = deck;
-        hand = new Hand();
+        this.data = data;
     }
+    
+    /**
+     * キャラクターデータのゲッター
+     * @see {@link #data}
+     * @retrun キャラクターデータ
+     */
+    @Override
+    public CharacterData getData() { return data; }
 
     /**
      * プレイヤーがカードを引きます。引いたカードがあれば手札に追加します。
@@ -27,7 +36,8 @@ public class Player implements PlayerActions {
     public void hit() {
         Card drawnCard = deck.drawCard();
         if (drawnCard != null) {
-            hand.addCard(drawnCard);
+        	data.getCards().add(drawnCard);
+        	data.updateScore();
         }
     }
 
@@ -37,14 +47,5 @@ public class Player implements PlayerActions {
     @Override
     public void stand() {
         // プレイヤーがスタンドする処理
-    }
-
-    /**
-     * プレイヤーの手札を取得します。
-     * @return プレイヤーの手札。
-     */
-    @Override
-    public Hand getHand() {
-        return hand;
     }
 }
