@@ -9,6 +9,7 @@ import programs.data.master.Card;
  * ブラックジャックのプレイヤーの手札を管理するクラスです。
  * 手札にカードを追加し、合計値を計算する機能を提供します。
  * @author 菅原 凜
+ * @deprecated {@link programs.data.CharacterData CharacterData}に統合
  */
 public class Hand {
     private List<Card> cards; // 手札のカードリスト
