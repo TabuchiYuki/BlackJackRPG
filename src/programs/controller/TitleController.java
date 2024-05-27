@@ -2,6 +2,7 @@ package programs.controller;
 
 import programs.data.ClickEventData;
 import programs.manager.ClickEventManager;
+import programs.manager.SceneManager;
 import programs.system.GameObject;
 
 /**
@@ -19,14 +20,8 @@ public class TitleController implements GameObject {
 	
 	@Override
 	public void update() {
-		if(clickEvent.isClickedDown()) {
-			System.out.println("clicked Down");
-		}
-		if(clickEvent.isClicked()) {
-			System.out.println("clicking");
-		}
 		if(clickEvent.isClickedUp()) {
-			System.out.println("clicked Up");
+			SceneManager.getInstance().loadScene(1);
 		}
 	}
 }

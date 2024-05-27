@@ -28,7 +28,7 @@ import programs.system.SystemValue;
 public class GameManager {
 	private static final int REFRESH_RATE = 30;
 	private static final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
-	private static final int FIRST_LOAD_SCENE_INDEX = 2;
+	private static final int FIRST_LOAD_SCENE_INDEX = 0;
 	
 	/**
 	 * リフレッシュタイムのゲッター
