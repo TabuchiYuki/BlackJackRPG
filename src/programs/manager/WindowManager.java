@@ -80,7 +80,7 @@ public class WindowManager{
 		// ウィンドウのサイズを設定
 		frame.pack();
 		Insets insets = frame.getInsets();
-		frame.setSize(width + insets.left + insets.right - 160, height + insets.top + insets.bottom - 120);
+		frame.setSize(width + insets.left + insets.right, height + insets.top + insets.bottom);
 		
 		// ウィンドウのリサイズを禁止
 		frame.setResizable(false);

@@ -1,6 +1,7 @@
 package programs.manager;
 
 import java.awt.Cursor;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -83,10 +84,11 @@ public class ClickEventManager {
 	 * @param e マウスイベント
 	 */
 	private void callClickHandle(MouseEvent e) {
+		Insets insets = frame.getInsets();
 		clickEventsMap.forEach((k, v) -> {
 			Rectangle eventArea = new Rectangle(
-				(int) v.getPosition().getX(), (int) v.getPosition().getY(),
-				(int) v.getArea().getX(), (int) v.getArea().getY()
+				insets.left + (int) v.getPosition().getX(), (int) v.getPosition().getY(),
+				insets.top + (int) v.getArea().getX(), (int) v.getArea().getY()
 			);
 			
 			if(eventArea.contains(e.getPoint())) {
@@ -109,17 +111,23 @@ public class ClickEventManager {
 	 * @param e マウスイベント
 	 */
 	private void changeMouseCursor(MouseEvent e) {
-		clickEventsMap.forEach((k, v) -> {
+		boolean cursorChange = false;
+		Insets insets = frame.getInsets();
+		for(Map.Entry<String, ClickEventData> entry : clickEventsMap.entrySet()) {
 			Rectangle eventArea = new Rectangle(
-				(int) v.getPosition().getX(), (int) v.getPosition().getY(),
-				(int) v.getArea().getX(), (int) v.getArea().getY()
+				insets.left + (int) entry.getValue().getPosition().getX(),
+				insets.top + (int) entry.getValue().getPosition().getY(),
+				(int) entry.getValue().getArea().getX(), (int) entry.getValue().getArea().getY()
 			);
-			
-			if(v.canChangeCursor() && eventArea.contains(e.getPoint())) {
-				frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			} else {
-				frame.setCursor(Cursor.getDefaultCursor());
+			if(entry.getValue().canChangeCursor() && eventArea.contains(e.getX(), e.getY())) {
+				cursorChange = true;
 			}
-		});
+		}
+		
+		if(cursorChange) {
+			frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		} else {
+			frame.setCursor(Cursor.getDefaultCursor());
+		}
 	}
 }

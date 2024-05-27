@@ -1,6 +1,7 @@
 package programs.manager;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -29,11 +30,15 @@ public class GraphicManager extends JPanel {
 	private List<TextGraphicData> textDataList = new ArrayList<>();
 	
 	private double frameRate;
+	private double originalScaleX;
+	private double originalScaleY;
 	
 	/**
 	 * プライベートコンストラクタ
 	 */
-	private GraphicManager() { }
+	private GraphicManager() {
+		setPreferredSize(new Dimension(800, 600));
+	}
 	
 	/**
 	 * インスタンスのゲッター
@@ -71,6 +76,8 @@ public class GraphicManager extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
+        originalScaleX = g2d.getTransform().getScaleX();
+        originalScaleY = g2d.getTransform().getScaleY();
         
         // 画像の表示
         graphicDataList.forEach(gd -> {
@@ -87,7 +94,7 @@ public class GraphicManager extends JPanel {
         	
         	AffineTransform at = g2d.getTransform();
     		// 行列を初期化
-    		at.setToIdentity();
+        	setOriginalTransform(at);
     		// 移動
     		at.translate(td.getPosition().getX(), td.getPosition().getY());
     		
@@ -99,7 +106,7 @@ public class GraphicManager extends JPanel {
         if(SystemValue.DEBUG) {
         	AffineTransform at = g2d.getTransform();
     		// 行列を初期化
-    		at.setToIdentity();
+        	setOriginalTransform(at);
     		g2d.setTransform(at);
     		
         	Color clickEventCol = new Color(255, 0, 0, 127);
@@ -131,7 +138,7 @@ public class GraphicManager extends JPanel {
 	private void transformImage(Graphics2D g2d, GraphicData gd) {
 		AffineTransform at = g2d.getTransform();
 		// 行列を初期化
-		at.setToIdentity();
+		setOriginalTransform(at);
 		
 		// ピボットを中心にする
 		at.translate(-gd.getPivot().getX() * gd.getScale().getX(), -gd.getPivot().getY() * gd.getScale().getY());
@@ -230,5 +237,16 @@ public class GraphicManager extends JPanel {
             j++;
             k++;
 		}
+	}
+	
+	/**
+	 * アフィン変換を初期化する
+	 * @param at アフィン変換
+	 * @return 初期化したアフィン変換
+	 */
+	private AffineTransform setOriginalTransform(AffineTransform at) {
+		at.setToIdentity();
+		at.setToScale(originalScaleX, originalScaleY);
+		return at;
 	}
 }
