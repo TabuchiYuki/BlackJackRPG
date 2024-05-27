@@ -1,17 +1,21 @@
 package programs.manager;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.swing.JPanel;
 
+import programs.data.ClickEventData;
 import programs.data.GraphicData;
 import programs.data.TextGraphicData;
+import programs.system.SystemValue;
 
 /**
  * グラフィックの描画処理を行うクラス
@@ -20,8 +24,11 @@ import programs.data.TextGraphicData;
  */
 public class GraphicManager extends JPanel {
 	private static GraphicManager instance;
+	
 	private List<GraphicData> graphicDataList = new ArrayList<>();
 	private List<TextGraphicData> textDataList = new ArrayList<>();
+	
+	private double frameRate;
 	
 	/**
 	 * プライベートコンストラクタ
@@ -53,17 +60,26 @@ public class GraphicManager extends JPanel {
 	 */
 	public List<TextGraphicData> getTextDataList() { return textDataList; }
 	
+	/**
+	 * [デバッグ用]フレームレートのセッター
+	 * @see {@link #frameRate}
+	 * @param frameRate フレームレート
+	 */
+	public void setFrameRate(double frameRate) { this.frameRate = frameRate; }
+	
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         
+        // 画像の表示
         graphicDataList.forEach(gd -> {
         	if(gd.isShow()) {
         		transformImage(g2d, gd);
         	}
         });
         
+        // テキストの表示
         textDataList.forEach(td -> {
         	Font font = td.getFont();
         	g2d.setFont(font);
@@ -78,6 +94,32 @@ public class GraphicManager extends JPanel {
     		g2d.setTransform(at);
         	g2d.drawString(td.getText(), 0, 0);
         });
+        
+        // デバッグ表示
+        if(SystemValue.DEBUG) {
+        	AffineTransform at = g2d.getTransform();
+    		// 行列を初期化
+    		at.setToIdentity();
+    		g2d.setTransform(at);
+    		
+        	Color clickEventCol = new Color(255, 0, 0, 127);
+        	g2d.setColor(clickEventCol);
+        	Map<String,ClickEventData> clickEventMap = ClickEventManager.getInstance().getClickEventsMap();
+        	clickEventMap.forEach((k, v) -> {
+        		g2d.fillRect((int) v.getPosition().getX(), (int) v.getPosition().getY(),
+        			(int) v.getArea().getX(), (int) v.getArea().getY());
+        	});
+        	
+        	g2d.setColor(Color.WHITE);
+        	g2d.setFont(new Font("Arial", Font.PLAIN, 16));
+        	String frameRateText;
+        	if(Objects.isNull(frameRate) || frameRate == 0.0d) {
+        		frameRateText = "FrameRate: measuring...";
+        	} else {
+        		frameRateText = String.format("FrameRate: %.3f", frameRate);
+        	}
+        	g2d.drawString(frameRateText, 0, 36);
+        }
     }
 	
 	/**
