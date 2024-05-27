@@ -19,6 +19,7 @@ import programs.data.Vector2;
 import programs.system.ExcelLoader;
 import programs.system.FontLoader;
 import programs.system.ImageLoader;
+import programs.system.SystemValue;
 
 /**
  * ゲーム進行を管理するマネージャークラス
@@ -97,7 +98,7 @@ public class GameManager {
 				
 				// テキスト表示
 				if(loadTextTimer < 1.2d) {
-					String text = "Now Loading";
+					String text = "Now Initializing";
 					for(int i = 0; i < (int) (loadTextTimer / 0.3d); i++) {
 						text += ".";
 					}
@@ -128,9 +129,28 @@ public class GameManager {
 		// 最初のシーンをロードする
 		SceneManager.getInstance().loadScene(FIRST_LOAD_SCENE_INDEX);
 		
+		int curtMeasureFrame = 0;
+		long startMeasureTime = 0;
+		
 		// ゲーム処理
 		while(true) {
 			try {
+				// デバッグ表示処理
+				if(SystemValue.DEBUG) {
+					if(curtMeasureFrame == 0) {
+						startMeasureTime = System.currentTimeMillis();
+						curtMeasureFrame++;
+					} else if(curtMeasureFrame == REFRESH_RATE) {
+						long endMeasureTime = System.currentTimeMillis();
+						double frameRate = 1.0d / ((double) (endMeasureTime - startMeasureTime) / 1000d) * (double) REFRESH_RATE;
+						
+						graMgr.setFrameRate(frameRate);
+						curtMeasureFrame = 0;
+					} else {
+						curtMeasureFrame++;
+					}
+				}
+				
 				// クリックイベントの更新メソッドを呼び出す
 				Map<String,ClickEventData> clickEvents = ClickEventManager.getInstance().getClickEventsMap();
 				clickEvents.forEach((k, v) ->{
