@@ -24,7 +24,7 @@ public class TextGraphicData {
 	 */
 	public TextGraphicData(String text, Font font, int size, Vector2 position, Color color) {
 		this.text = text;
-		this.font = font.deriveFont(size);
+		this.font = font.deriveFont(Font.PLAIN, size);
 		this.size = size;
 		this.position = position;
 		this.color = color;

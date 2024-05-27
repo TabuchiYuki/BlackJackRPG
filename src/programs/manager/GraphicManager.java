@@ -244,9 +244,8 @@ public class GraphicManager extends JPanel {
 	 * @param at アフィン変換
 	 * @return 初期化したアフィン変換
 	 */
-	private AffineTransform setOriginalTransform(AffineTransform at) {
+	private void setOriginalTransform(AffineTransform at) {
 		at.setToIdentity();
 		at.setToScale(originalScaleX, originalScaleY);
-		return at;
 	}
 }
