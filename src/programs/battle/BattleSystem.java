@@ -1,8 +1,14 @@
 package programs.battle;
 
+import java.awt.Color;
+
 import programs.blackJack.GameRules;
 import programs.data.BlackJackResult;
 import programs.data.CharacterData;
+import programs.data.TextGraphicData;
+import programs.data.Vector2;
+import programs.manager.GraphicManager;
+import programs.system.FontLoader;
 import programs.system.GameObject;
 
 /**
@@ -13,6 +19,11 @@ import programs.system.GameObject;
 public class BattleSystem implements GameObject {
 	private CharacterData player;
 	private CharacterData dealer;
+	
+	private TextGraphicData playerNameText;
+	private TextGraphicData playerHpText;
+	private TextGraphicData dealerNameText;
+	private TextGraphicData dealerHpText;
 	
 	private GameRules gameRules;
 
@@ -31,10 +42,40 @@ public class BattleSystem implements GameObject {
 	
 	@Override
 	public void init() {
-		System.out.println(player.getHp());
-		System.out.println(player.getAtk());
-		System.out.println(dealer.getHp());
-		System.out.println(dealer.getAtk());
+		playerNameText = new TextGraphicData(
+			"player",
+			FontLoader.getInstance().getFonts().get(0),
+			64,
+			new Vector2(50, 480),
+			Color.WHITE
+		);
+		System.out.println(playerNameText.getFont());
+		playerHpText = new TextGraphicData(
+			String.format("hp:%d", player.getHp()),
+			FontLoader.getInstance().getFonts().get(0),
+			64,
+			new Vector2(50, 540),
+			Color.WHITE
+		);
+		dealerNameText = new TextGraphicData(
+			"dealer",
+			FontLoader.getInstance().getFonts().get(0),
+			64,
+			new Vector2(580, 80),
+			Color.WHITE
+		);
+		dealerHpText = new TextGraphicData(
+			String.format("hp:%d", dealer.getHp()),
+			FontLoader.getInstance().getFonts().get(0),
+			64,
+			new Vector2(580, 140),
+			Color.WHITE
+		);
+		
+		GraphicManager.getInstance().getTextDataList().add(playerNameText);
+		GraphicManager.getInstance().getTextDataList().add(playerHpText);
+		GraphicManager.getInstance().getTextDataList().add(dealerNameText);
+		GraphicManager.getInstance().getTextDataList().add(dealerHpText);
 	}
 
 	/**
