@@ -3,6 +3,7 @@ package programs.battle;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
+import programs.data.AnimationType;
 import programs.data.GraphicData;
 import programs.data.TextGraphicData;
 import programs.data.Vector2;
@@ -28,6 +29,7 @@ public class BattleDisplay implements GameObject {
 	
 	private final int STATUS_TEXT_FONT_SIZE = 48;
 	private final int SCORE_TEXT_FONT_SIZE = 64;
+	private final int ANNOUNCE_TEXT_FONT_SIZE = 32;
 	
 	private final int CARD_SPLIT_HORIZONTAL = 13;
 	private final int CARD_SPLIT_VERTICAL = 5;
@@ -45,6 +47,8 @@ public class BattleDisplay implements GameObject {
 	private final Vector2 PLAYER_TEXT_BASE_POSITION = new Vector2(50, 450);
 	private final Vector2 DEALER_TEXT_BASE_POSITION = new Vector2(610, 70);
 	private final Vector2 STATUS_TEXT_LINE_SPACE = new Vector2(0, 50);
+	
+	private final Vector2 ANNOUNCE_TEXT_POSITION = new Vector2(400, 350);
 	
 	private final Vector2 PLAYER_SCORE_POSITION = new Vector2(400, 430);
 	private final Vector2 DEALER_SCORE_POSITION = new Vector2(400, 200);
@@ -79,9 +83,17 @@ public class BattleDisplay implements GameObject {
 	private TextGraphicData dealerHpText;
 	private TextGraphicData playerScoreText;
 	private TextGraphicData dealerScoreText;
-	private TextGraphicData damageText;	
+	private TextGraphicData damageText;
+	private TextGraphicData announceText;
+	
+	private AnimationType animType;
 	
 	private boolean animating = false;
+	private boolean animationEnd = false;
+	private boolean animated = false;
+	
+	private double animTime;
+	private double timeCounter;
 	
 	/**
 	 * アニメーション中かの判定のゲッター
@@ -89,6 +101,12 @@ public class BattleDisplay implements GameObject {
 	 * @return アニメーション中かの判定
 	 */
 	public boolean isAnimating() { return animating; }
+	/**
+	 * アニメーション終了判定のゲッター
+	 * @see {@link #animationEnd}
+	 * @return アニメーション終了判定
+	 */
+	public boolean isAnimationEnd() { return animationEnd; }
 	/**
 	 * プレイヤースコアのテキストのゲッター
 	 * @see {@link #playerScoreText}
@@ -101,6 +119,12 @@ public class BattleDisplay implements GameObject {
 	 * @return ディーラースコアのテキスト
 	 */
 	public TextGraphicData getDealerScoreText() { return dealerScoreText; }
+	/**
+	 * アナウンステキストのゲッター
+	 * @see {@link #announceText}
+	 * @return アナウンステキスト
+	 */
+	public TextGraphicData getAnnounceText() { return announceText; }
 	
 	@Override
 	public void init() {
@@ -109,7 +133,46 @@ public class BattleDisplay implements GameObject {
 	
 	@Override
 	public void update() {
+		if(animating) {
+			timeCounter++;
+			animated = true;
+			
+			switch(animType) {
+			case WAIT:
+				waitOnly();
+				break;
+			case DISTRIBUTE_FROM_DECK:
+				distribution();
+				break;
+			case BACK_TO_DECK:
+				backToDeck();
+				break;
+			case PLAYER_HIT:
+				playerHit();
+				break;
+			case SHOW_DEALERS_CARD:
+				showDealersCard();
+				break;
+			case DEALER_HIT:
+				dealerHit();
+				break;
+			case ATTACK_AND_DAMAGE:
+				attack();
+				break;
+			case SHOW_RESULT:
+				showResult();
+				break;
+			default:
+				break;
+			}
+		}
 		
+		if(animated && !animating) {
+			animated = false;
+			animationEnd = true;
+		} else {
+			animationEnd = false;
+		}
 	}
 	
 	/**
@@ -141,9 +204,18 @@ public class BattleDisplay implements GameObject {
 			Color.GRAY,
 			true
 		);
+		announceText = new TextGraphicData(
+			"",
+			FontLoader.getInstance().getFonts().get(FONT_INDEX),
+			ANNOUNCE_TEXT_FONT_SIZE,
+			ANNOUNCE_TEXT_POSITION,
+			Color.WHITE,
+			true
+		);
 		GraphicManager.getInstance().getTextDataList().add(damageText);
 		GraphicManager.getInstance().getTextDataList().add(playerScoreText);
 		GraphicManager.getInstance().getTextDataList().add(dealerScoreText);
+		GraphicManager.getInstance().getTextDataList().add(announceText);
 		
 		hitButton = new GraphicData(
 			ImageLoader.getInstance().getImagesMap().get(HIT_BUTTON_KEY_NAME),
@@ -314,5 +386,90 @@ public class BattleDisplay implements GameObject {
 	public void updateHpDisplay(int playerHp, int dealerHp) {
 		playerHpText.setText(String.format("hp:%d", playerHp));
 		dealerHpText.setText(String.format("hp:%d", dealerHp));;
+	}
+	
+	/**
+	 * アニメーションを開始する
+	 * @param animationType アニメーションの種類
+	 * @param animationTime アニメーションの時間
+	 */
+	public void startAnimation(AnimationType animationType, double animationTime) {
+		animType = animationType;
+		animTime = animationTime;
+		timeCounter = 0.0d;
+		
+		animating = true;
+	}
+	
+	/**
+	 * アニメーションせずに待つだけ
+	 */
+	private void waitOnly() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
+	}
+	
+	/**
+	 * 手札の分配アニメーション
+	 */
+	private void distribution() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
+	}
+	
+	/**
+	 * 手札をデッキに戻すアニメーション
+	 */
+	private void backToDeck() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
+	}
+	
+	/**
+	 * プレイヤーのヒットのアニメーション
+	 */
+	private void playerHit() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
+	}
+	
+	/**
+	 * ディーラーのカードを公開するアニメーション
+	 */
+	private void showDealersCard() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
+	}
+	
+	/**
+	 * ディーラーのヒットのアニメーション
+	 */
+	private void dealerHit() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
+	}
+	
+	/**
+	 * 攻撃のアニメーション
+	 */
+	private void attack() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
+	}
+	
+	/**
+	 * 戦闘結果の表示アニメーション
+	 */
+	private void showResult() {
+		if(animTime <= timeCounter) {
+			animating = false;
+		}
 	}
 }

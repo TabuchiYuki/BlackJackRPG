@@ -1,6 +1,7 @@
 package programs.battle;
 
 import programs.blackJack.GameRules;
+import programs.data.AnimationType;
 import programs.data.BattlePhase;
 import programs.data.BlackJackResult;
 import programs.data.CharacterData;
@@ -71,7 +72,12 @@ public class BattleSystem implements GameObject {
 	public void update() {
 		switch(phase) {
 		case SETUP:
-			setup();
+			if(!display.isAnimating() && !display.isAnimationEnd()) {
+				setup();
+				display.startAnimation(AnimationType.WAIT, 1d);
+			} else if(display.isAnimationEnd()) {
+				phase = BattlePhase.PLAYER;
+			}
 			break;
 		case PLAYER:
 			if(player.getScore() < 21 && hit.isClickedDown()) {
@@ -128,7 +134,8 @@ public class BattleSystem implements GameObject {
 			display.hideHitButton();
 		}
 		stand.setChangeCursor(true);
-		phase = BattlePhase.PLAYER;
+		
+		display.getAnnounceText().setText("your turn");
 	}
 	
 	/**
@@ -157,6 +164,8 @@ public class BattleSystem implements GameObject {
 		display.getDealerScoreText().setText(Integer.toString(dealer.getScore()));
 		display.changeScoreColor(dealer.getScore(), display.getDealerScoreText());
 		
+		display.getAnnounceText().setText("dealer's turn");
+		
 		phase = BattlePhase.DEALER;
 	}
 	
@@ -179,13 +188,15 @@ public class BattleSystem implements GameObject {
 		case VICTORY:
 			int newDealerHP = dealer.getHp() - player.getAtk();
 			dealer.setHp(newDealerHP < 0 ? 0 : newDealerHP);
+			display.getAnnounceText().setText("your attack!");
 			break;
 		case DEFEAT:
 			int newPlayerHP = player.getHp() - dealer.getAtk();
 			player.setHp(newPlayerHP < 0 ? 0 : newPlayerHP);
+			display.getAnnounceText().setText("dealer's attack!");
 			break;
 		case DRAW:
-			// Do nothing
+			display.getAnnounceText().setText("draw");
 			break;
 		}
 		display.updateHpDisplay(player.getHp(), dealer.getHp());
