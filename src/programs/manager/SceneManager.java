@@ -89,6 +89,7 @@ public class SceneManager {
 			}
 			
 			Cell classCell = row.getCell(0);
+			if(classCell.getStringCellValue().isEmpty()) continue;
 			
 			String className = classCell.getStringCellValue();
 			List<Object> args = new ArrayList<>();
@@ -145,6 +146,8 @@ public class SceneManager {
 			}
 			
 			Cell keyCell = row.getCell(0);
+			if(keyCell.getStringCellValue().isEmpty()) continue;
+			
 			Cell layerCell = row.getCell(1);
 			List<Double> args = new ArrayList<>();
 			
@@ -177,6 +180,8 @@ public class SceneManager {
 			}
 			
 			Cell keyCell = row.getCell(0);
+			if(keyCell.getStringCellValue().isEmpty()) continue;
+			
 			List<Double> args = new ArrayList<>();
 			Cell cursorCell = row.getCell(5);
 			

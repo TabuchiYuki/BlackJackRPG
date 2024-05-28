@@ -1,14 +1,10 @@
 package programs.battle;
 
-import java.awt.Color;
-
 import programs.blackJack.GameRules;
 import programs.data.BlackJackResult;
 import programs.data.CharacterData;
 import programs.data.TextGraphicData;
-import programs.data.Vector2;
-import programs.manager.GraphicManager;
-import programs.system.FontLoader;
+import programs.manager.SceneManager;
 import programs.system.GameObject;
 
 /**
@@ -17,12 +13,14 @@ import programs.system.GameObject;
  * @author 小川涼介
  */
 public class BattleSystem implements GameObject {
+	private final int BATTLE_DISPLAY_OBJECT_INDEX = 1;
+	
+	private BattleDisplay battleDisplay;
+	
 	private CharacterData player;
 	private CharacterData dealer;
 	
-	private TextGraphicData playerNameText;
 	private TextGraphicData playerHpText;
-	private TextGraphicData dealerNameText;
 	private TextGraphicData dealerHpText;
 	
 	private GameRules gameRules;
@@ -42,40 +40,9 @@ public class BattleSystem implements GameObject {
 	
 	@Override
 	public void init() {
-		playerNameText = new TextGraphicData(
-			"player",
-			FontLoader.getInstance().getFonts().get(0),
-			64,
-			new Vector2(50, 480),
-			Color.WHITE
-		);
-		System.out.println(playerNameText.getFont());
-		playerHpText = new TextGraphicData(
-			String.format("hp:%d", player.getHp()),
-			FontLoader.getInstance().getFonts().get(0),
-			64,
-			new Vector2(50, 540),
-			Color.WHITE
-		);
-		dealerNameText = new TextGraphicData(
-			"dealer",
-			FontLoader.getInstance().getFonts().get(0),
-			64,
-			new Vector2(580, 80),
-			Color.WHITE
-		);
-		dealerHpText = new TextGraphicData(
-			String.format("hp:%d", dealer.getHp()),
-			FontLoader.getInstance().getFonts().get(0),
-			64,
-			new Vector2(580, 140),
-			Color.WHITE
-		);
-		
-		GraphicManager.getInstance().getTextDataList().add(playerNameText);
-		GraphicManager.getInstance().getTextDataList().add(playerHpText);
-		GraphicManager.getInstance().getTextDataList().add(dealerNameText);
-		GraphicManager.getInstance().getTextDataList().add(dealerHpText);
+		// ディスプレイの取得
+		battleDisplay = (BattleDisplay) SceneManager.getInstance().getScene().getGameObjects().get(BATTLE_DISPLAY_OBJECT_INDEX);
+		battleDisplay.showStatus(player.getHp(), player.getAtk(), dealer.getHp(), dealer.getAtk());
 	}
 
 	/**
@@ -86,10 +53,12 @@ public class BattleSystem implements GameObject {
 		case VICTORY:
 			int newDealerHP = dealer.getHp() - player.getAtk();
 			dealer.setHp(newDealerHP < 0 ? 0 : newDealerHP);
+			dealerHpText.setText(String.format("hp:%d", dealer.getHp()));
 			break;
 		case DEFEAT:
 			int newPlayerHP = player.getHp() - dealer.getAtk();
 			player.setHp(newPlayerHP < 0 ? 0 : newPlayerHP);
+			playerHpText.setText(String.format("hp:%d", player.getHp()));
 			break;
 		case DRAW:
 			// Do nothing
