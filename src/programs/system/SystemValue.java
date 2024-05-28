@@ -6,6 +6,22 @@ package programs.system;
  */
 public class SystemValue {
 	/**
+	 * ウィンドウタイトルなどに表示するゲームタイトル
+	 */
+	public static final String GAME_TITLE = "「21」～ギャンブラーの戦い～";
+	/**
+	 * リフレッシュレート
+	 */
+	public static final int REFRESH_RATE = 60;
+	/**
+	 * ウィンドウの幅
+	 */
+	public static final int WINDOW_WIDTH = 800;
+	/**
+	 * ウィンドウの高さ
+	 */
+	public static final int WINDOW_HEIGHT = 600;
+	/**
 	 * デバッグの有効化
 	 */
 	public static final boolean DEBUG = false;
