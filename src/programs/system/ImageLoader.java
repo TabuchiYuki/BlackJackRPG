@@ -75,7 +75,7 @@ public class ImageLoader{
 	 * @param getHorizontal 取得するセルの横インデックス
 	 * @return 分割した画像
 	 */
-	public BufferedImage imageSplit(BufferedImage img, int vertical, int horizontal, int getVertical, int getHorizontal) {
+	public BufferedImage imageSplit(BufferedImage img, int horizontal, int vertical, int getHorizontal, int getVertical) {
 		if(vertical <= 0 || horizontal <= 0 || getVertical < 0 || getHorizontal < 0
 			|| getVertical > vertical || getHorizontal > horizontal) {
 			System.out.print("不正な値が入力されています");

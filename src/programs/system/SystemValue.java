@@ -8,7 +8,7 @@ public class SystemValue {
 	/**
 	 * デバッグの有効化
 	 */
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	
 	/**
 	 * プライベートコンストラクタを用い、インスタンス化を制限

@@ -15,15 +15,10 @@ import programs.data.master.CardDatabase;
 public class Deck {
     private List<Card> cards; // デッキ内のカード
 
-    public Deck() {
-        initializeDeck();
-        shuffle();
-    }
-
     /**
      * デッキを初期化し、全カードを生成して追加します。
      */
-    private void initializeDeck() {
+    public void initializeDeck() {
         cards = new ArrayList<>();
         // CardDatabaseから全カードを取得してデッキに追加
         Collections.addAll(cards, CardDatabase.getInstance().getCards());

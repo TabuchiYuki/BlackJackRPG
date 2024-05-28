@@ -26,7 +26,7 @@ import programs.system.SystemValue;
  * @author 田淵勇輝
  */
 public class GameManager {
-	private static final int REFRESH_RATE = 30;
+	private static final int REFRESH_RATE = 60;
 	private static final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
 	private static final int FIRST_LOAD_SCENE_INDEX = 0;
 	
