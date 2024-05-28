@@ -5,6 +5,15 @@ package programs.data;
  * @author 田淵勇輝
  */
 public class Vector2 {
+	/**
+	 * 0ベクトル
+	 */
+	public static final Vector2 ZERO = new Vector2(0, 0);
+	/**
+	 * XYともに1のベクトル
+	 */
+	public static final Vector2 ONE = new Vector2(1, 1);
+	
 	private double x;
 	private double y;
 	
@@ -44,7 +53,23 @@ public class Vector2 {
 	 */
 	public void setY(double y) { this.y = y; }
 	
-	// 以下静的メソッド
+	/**
+	 * ベクトルの足し算
+	 * @param vec 足すベクトル
+	 * @return 計算結果
+	 */
+	public Vector2 add(Vector2 vec) {
+		return new Vector2(x + vec.getX(), y + vec.getY());
+	}
+	
+	/**
+	 * ベクトルの掛け算
+	 * @param mult 掛ける値
+	 * @return 計算結果
+	 */
+	public Vector2 multiply(double mult) {
+		return new Vector2(x * mult, y * mult);
+	}
 	
 	/**
 	 * 正規化

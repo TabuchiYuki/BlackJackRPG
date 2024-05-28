@@ -1,12 +1,12 @@
 package programs.system;
 
 /**
- * システム用変数を持つクラス
+ * ゲームのシステム用変数を持つクラス
  * @author 田淵勇輝
  */
 public class SystemValue {
 	/**
-	 * デバッグ判定
+	 * デバッグの有効化
 	 */
 	public static final boolean DEBUG = true;
 	

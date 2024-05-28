@@ -121,7 +121,7 @@ public class GameManager {
 		
 		/*
 		System.out.println(SaveManager.getInstance().getSaveData().getGrade());
-		SaveManager.getInstance().getSaveData().setGrade(DifficultyGrade.MIDDLE);
+		SaveManager.getInstance().getSaveData().setGrade(DifficultyGrade.HIGH);
 		SaveManager.getInstance().save();
 		System.out.println(SaveManager.getInstance().getSaveData().getGrade());
 		*/
