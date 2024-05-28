@@ -27,6 +27,10 @@ public class BattleDisplay implements GameObject {
 	private final String BUST_IMAGE_KEY_NAME = "bust";
 	
 	private final int STATUS_TEXT_FONT_SIZE = 48;
+	private final int SCORE_TEXT_FONT_SIZE = 64;
+	
+	private final int CARD_SPLIT_HORIZONTAL = 13;
+	private final int CARD_SPLIT_VERTICAL = 5;
 	
 	private final int CARD_LAYER_BASE = 1000;
 	private final int BUTTON_LAYER_BASE = 2000;
@@ -34,22 +38,33 @@ public class BattleDisplay implements GameObject {
 	private final int RESULT_LAYER_BASE = 4000;
 	
 	private final Vector2 CENTER_POSITION = new Vector2(400, 300);
+	
 	private final Vector2 PLAYER_DAMAGE_POSITION = new Vector2(180, 475);
 	private final Vector2 DEALER_DAMAGE_POSITION = new Vector2(740, 95);
+	
 	private final Vector2 PLAYER_TEXT_BASE_POSITION = new Vector2(50, 450);
 	private final Vector2 DEALER_TEXT_BASE_POSITION = new Vector2(610, 70);
 	private final Vector2 STATUS_TEXT_LINE_SPACE = new Vector2(0, 50);
-	private final Vector2 PLAYER_SCORE_POSITION = new Vector2(400, 520);
-	private final Vector2 DEALER_SCORE_POSITION = new Vector2(400, 120);
+	
+	private final Vector2 PLAYER_SCORE_POSITION = new Vector2(400, 430);
+	private final Vector2 DEALER_SCORE_POSITION = new Vector2(400, 200);
+	
+	private final Vector2 DECK_CARD_POSITION = new Vector2(100, 150);
 	private final Vector2 PLAYER_CARD_LEFT_POSITION = new Vector2(320, 500);
 	private final Vector2 PLAYER_CARD_RIGHT_POSITION = new Vector2(480, 500);
 	private final Vector2 DEALER_CARD_LEFT_POSITION = new Vector2(320, 100);
 	private final Vector2 DEALER_CARD_RIGHT_POSITION = new Vector2(480, 100);
+	private final Vector2 CARD_SCALE = new Vector2(0.3d, 0.3d);
+	
 	private final Vector2 PLAYER_BUST_POSITION = new Vector2(400, 500);
 	private final Vector2 DEALER_BUST_POSITION = new Vector2(400, 100);
-	private final Vector2 CARD_SCALE = new Vector2(0.3d, 0.3d);
+	
 	private final Vector2 HIT_BUTTON_POSITION = new Vector2(680, 430);
 	private final Vector2 STAND_BUTTON_POSITION = new Vector2(680, 540);
+	
+	private final Color SCORE_NORMAL_COLOR = new Color(64, 127, 255);
+	private final Color SCORE_PERFECT_COLOR = new Color(255, 255, 0);
+	private final Color SCORE_BUST_COLOR = new Color(100, 100, 100);
 	
 	// フィールド
 	private BufferedImage cardCells;
@@ -74,6 +89,18 @@ public class BattleDisplay implements GameObject {
 	 * @return アニメーション中かの判定
 	 */
 	public boolean isAnimating() { return animating; }
+	/**
+	 * プレイヤースコアのテキストのゲッター
+	 * @see {@link #playerScoreText}
+	 * @return プレイヤースコアのテキスト
+	 */
+	public TextGraphicData getPlayerScoreText() { return playerScoreText; }
+	/**
+	 * ディーラースコアのテキストのゲッター
+	 * @see {@link #dealerScoreText}
+	 * @return ディーラースコアのテキスト
+	 */
+	public TextGraphicData getDealerScoreText() { return dealerScoreText; }
 	
 	@Override
 	public void init() {
@@ -92,26 +119,31 @@ public class BattleDisplay implements GameObject {
 		cardCells = ImageLoader.getInstance().getImagesMap().get(CARD_CELL_IMAGE_KEY_NAME);
 		damageText = new TextGraphicData(
 			"",
-			FontLoader.getInstance().getFonts().get(0),
+			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
 			Vector2.ZERO,
-			new Color(0, 0, 0, 0)
+			Color.RED,
+			false
 		);
 		playerScoreText = new TextGraphicData(
 			"",
-			FontLoader.getInstance().getFonts().get(0),
-			STATUS_TEXT_FONT_SIZE,
+			FontLoader.getInstance().getFonts().get(FONT_INDEX),
+			SCORE_TEXT_FONT_SIZE,
 			PLAYER_SCORE_POSITION,
-			Color.BLACK
+			Color.GRAY,
+			true
 		);
 		dealerScoreText = new TextGraphicData(
 			"",
-			FontLoader.getInstance().getFonts().get(0),
-			STATUS_TEXT_FONT_SIZE,
+			FontLoader.getInstance().getFonts().get(FONT_INDEX),
+			SCORE_TEXT_FONT_SIZE,
 			DEALER_SCORE_POSITION,
-			Color.BLACK
+			Color.GRAY,
+			true
 		);
 		GraphicManager.getInstance().getTextDataList().add(damageText);
+		GraphicManager.getInstance().getTextDataList().add(playerScoreText);
+		GraphicManager.getInstance().getTextDataList().add(dealerScoreText);
 		
 		hitButton = new GraphicData(
 			ImageLoader.getInstance().getImagesMap().get(HIT_BUTTON_KEY_NAME),
@@ -158,12 +190,22 @@ public class BattleDisplay implements GameObject {
 			Vector2.ZERO,
 			false
 		);
+		GraphicData deckCard = new GraphicData(
+			ImageLoader.getInstance().imageSplit(cardCells, CARD_SPLIT_HORIZONTAL, CARD_SPLIT_VERTICAL, 0, 4),
+			CARD_LAYER_BASE,
+			DECK_CARD_POSITION,
+			CARD_SCALE,
+			0,
+			Vector2.ZERO,
+			true
+		);
 		
 		GraphicManager.getInstance().getGraphicDataList().add(hitButton);
 		GraphicManager.getInstance().getGraphicDataList().add(standButton);
 		GraphicManager.getInstance().getGraphicDataList().add(playerBust);
 		GraphicManager.getInstance().getGraphicDataList().add(dealerBust);
 		GraphicManager.getInstance().getGraphicDataList().add(result);
+		GraphicManager.getInstance().getGraphicDataList().add(deckCard);
 		
 		GraphicManager.getInstance().sortLayer();
 	}
@@ -181,42 +223,48 @@ public class BattleDisplay implements GameObject {
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
 			PLAYER_TEXT_BASE_POSITION,
-			Color.WHITE
+			Color.WHITE,
+			false
 		);
 		playerHpText = new TextGraphicData(
 			String.format("hp:%d", playerHp),
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
 			PLAYER_TEXT_BASE_POSITION.add(STATUS_TEXT_LINE_SPACE),
-			Color.WHITE
+			Color.WHITE,
+			false
 		);
 		TextGraphicData playerAtkText = new TextGraphicData(
 			String.format("atk:%d", playerAtk),
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
 			PLAYER_TEXT_BASE_POSITION.add(STATUS_TEXT_LINE_SPACE.multiply(2)),
-			Color.WHITE
+			Color.WHITE,
+			false
 		);
 		TextGraphicData dealerNameText = new TextGraphicData(
 			"dealer",
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
 			DEALER_TEXT_BASE_POSITION,
-			Color.WHITE
+			Color.WHITE,
+			false
 		);
 		dealerHpText = new TextGraphicData(
 			String.format("hp:%d", dealerHp),
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
 			DEALER_TEXT_BASE_POSITION.add(STATUS_TEXT_LINE_SPACE),
-			Color.WHITE
+			Color.WHITE,
+			false
 		);
 		TextGraphicData dealerAtkText = new TextGraphicData(
 			String.format("atk:%d", dealerAtk),
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
 			DEALER_TEXT_BASE_POSITION.add(STATUS_TEXT_LINE_SPACE.multiply(2)),
-			Color.WHITE
+			Color.WHITE,
+			false
 		);
 		
 		GraphicManager.getInstance().getTextDataList().add(playerNameText);
@@ -234,5 +282,37 @@ public class BattleDisplay implements GameObject {
 	public void displayButton(boolean show) {
 		hitButton.setShow(show);
 		standButton.setShow(show);
+	}
+	
+	/**
+	 * ヒットボタンだけを隠す
+	 */
+	public void hideHitButton() {
+		hitButton.setShow(false);
+	}
+	
+	/**
+	 * スコア表示の色変更
+	 * @param score
+	 * @param text
+	 */
+	public void changeScoreColor(int score, TextGraphicData text) {
+		if(score < 21) {
+			text.setColor(SCORE_NORMAL_COLOR);
+		} else if(score == 21) {
+			text.setColor(SCORE_PERFECT_COLOR);
+		} else {
+			text.setColor(SCORE_BUST_COLOR);
+		}
+	}
+	
+	/**
+	 * HPの表示を更新する
+	 * @param playerHp プレイヤーのHP
+	 * @param dealerHp ディーラーのHP
+	 */
+	public void updateHpDisplay(int playerHp, int dealerHp) {
+		playerHpText.setText(String.format("hp:%d", playerHp));
+		dealerHpText.setText(String.format("hp:%d", dealerHp));;
 	}
 }

@@ -3,6 +3,7 @@ package programs.manager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -97,6 +98,12 @@ public class GraphicManager extends JPanel {
         	setOriginalTransform(at);
     		// 移動
     		at.translate(td.getPosition().getX(), td.getPosition().getY());
+    		
+    		// 中央揃えにする
+    		if(td.getCenterAlign()) {
+    			FontMetrics fontmetrics = g2d.getFontMetrics();
+    			at.translate(-fontmetrics.stringWidth(td.getText()) / 2, 0);
+    		}
     		
     		g2d.setTransform(at);
         	g2d.drawString(td.getText(), 0, 0);

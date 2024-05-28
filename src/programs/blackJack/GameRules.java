@@ -24,13 +24,37 @@ public class GameRules {
 		dealer = new Dealer(deck, dealerData);
 	}
 	
+	/**
+	 * デッキを初期化し、シャッフルする
+	 */
+	public void setupDeck() {
+		player.getData().getCards().clear();
+		dealer.getData().getCards().clear();
+		deck.initializeDeck();
+		deck.shuffle();
+	}
+	
+	/**
+	 * プレイヤーのヒット
+	 */
+	public void playerHit() {
+		player.hit();
+	}
+	
+	/**
+	 * ディーラーのヒット
+	 */
+	public void dealerHit() {
+		dealer.hit();
+	}
+	
     /**
      * プレイヤーとディーラーの手札を比較して勝敗を判定します。
      * @param playerHand プレイヤーの手札
      * @param dealerHand ディーラーの手札
      * @return 勝敗結果の列挙型 (BlackJackResult)
      */
-    public static BlackJackResult determineWinner(int playerScore, int dealerScore) {
+    public BlackJackResult determineWinner(int playerScore, int dealerScore) {
         if (playerScore > 21) {
             return BlackJackResult.DEFEAT;  // プレイヤーがバスト
         } else if (dealerScore > 21) {

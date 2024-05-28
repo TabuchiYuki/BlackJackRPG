@@ -13,6 +13,7 @@ public class TextGraphicData {
 	private int size;
 	private Vector2 position;
 	private Color color;
+	private boolean centerAlign;
 	
 	/**
 	 * 全て初期化するコンストラクタ
@@ -22,17 +23,19 @@ public class TextGraphicData {
 	 * @param position 表示位置
 	 * @param color 文字色
 	 */
-	public TextGraphicData(String text, Font font, int size, Vector2 position, Color color) {
+	public TextGraphicData(String text, Font font, int size, Vector2 position, Color color, boolean centerAlign) {
 		this.text = text;
 		this.font = font.deriveFont(Font.PLAIN, size);
 		this.size = size;
 		this.position = position;
 		this.color = color;
+		this.centerAlign = centerAlign;
 	}
 	
 	/**
 	 * コンストラクタ
 	 * フォントは自動的にArialになります
+	 * また、中央揃えはオフになります
 	 * @param text 表示する文字列
 	 * @param size フォントサイズ
 	 * @param position 表示位置
@@ -44,6 +47,7 @@ public class TextGraphicData {
 		this.size = size;
 		this.position = position;
 		this.color = color;
+		centerAlign = false;
 	}
 	
 	/**
@@ -76,6 +80,12 @@ public class TextGraphicData {
 	 * @return
 	 */
 	public Color getColor() { return color; }
+	/**
+	 * 中央揃えのゲッター
+	 * @see {@link #centerAlign}
+	 * @return 中央揃え
+	 */
+	public boolean getCenterAlign() { return centerAlign; }
 	
 	/**
 	 * 文字列のセッター
@@ -104,6 +114,12 @@ public class TextGraphicData {
 	 * @param color 文字色
 	 */
 	public void setColor(Color color) { this.color = color; }
+	/**
+	 * 中央揃えのセッター
+	 * @see {@link #centerAlgn}
+	 * @param centerAlign 中央揃え
+	 */
+	public void setCenterAlign(boolean centerAlign) { this.centerAlign = centerAlign; }
 	
 	/**
 	 * 座標を加算
