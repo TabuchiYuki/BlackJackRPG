@@ -44,6 +44,11 @@ public class BattleSystem implements GameObject {
 		battleDisplay = (BattleDisplay) SceneManager.getInstance().getScene().getGameObjects().get(BATTLE_DISPLAY_OBJECT_INDEX);
 		battleDisplay.showStatus(player.getHp(), player.getAtk(), dealer.getHp(), dealer.getAtk());
 	}
+	
+	@Override
+	public void update() {
+		
+	}
 
 	/**
 	 * バトルの結果に基づいてHPを更新する

@@ -39,6 +39,8 @@ public class BattleDisplay implements GameObject {
 	private final Vector2 PLAYER_TEXT_BASE_POSITION = new Vector2(50, 450);
 	private final Vector2 DEALER_TEXT_BASE_POSITION = new Vector2(610, 70);
 	private final Vector2 STATUS_TEXT_LINE_SPACE = new Vector2(0, 50);
+	private final Vector2 PLAYER_SCORE_POSITION = new Vector2(400, 520);
+	private final Vector2 DEALER_SCORE_POSITION = new Vector2(400, 120);
 	private final Vector2 PLAYER_CARD_LEFT_POSITION = new Vector2(320, 500);
 	private final Vector2 PLAYER_CARD_RIGHT_POSITION = new Vector2(480, 500);
 	private final Vector2 DEALER_CARD_LEFT_POSITION = new Vector2(320, 100);
@@ -60,7 +62,9 @@ public class BattleDisplay implements GameObject {
 	
 	private TextGraphicData playerHpText;
 	private TextGraphicData dealerHpText;
-	private TextGraphicData damageText;
+	private TextGraphicData playerScoreText;
+	private TextGraphicData dealerScoreText;
+	private TextGraphicData damageText;	
 	
 	private boolean animating = false;
 	
@@ -84,7 +88,7 @@ public class BattleDisplay implements GameObject {
 	/**
 	 * グラフィックの準備
 	 */
-	private void setupGraphic() {
+	public void setupGraphic() {
 		cardCells = ImageLoader.getInstance().getImagesMap().get(CARD_CELL_IMAGE_KEY_NAME);
 		damageText = new TextGraphicData(
 			"",
@@ -92,6 +96,20 @@ public class BattleDisplay implements GameObject {
 			STATUS_TEXT_FONT_SIZE,
 			Vector2.ZERO,
 			new Color(0, 0, 0, 0)
+		);
+		playerScoreText = new TextGraphicData(
+			"",
+			FontLoader.getInstance().getFonts().get(0),
+			STATUS_TEXT_FONT_SIZE,
+			PLAYER_SCORE_POSITION,
+			Color.BLACK
+		);
+		dealerScoreText = new TextGraphicData(
+			"",
+			FontLoader.getInstance().getFonts().get(0),
+			STATUS_TEXT_FONT_SIZE,
+			DEALER_SCORE_POSITION,
+			Color.BLACK
 		);
 		GraphicManager.getInstance().getTextDataList().add(damageText);
 		
@@ -122,7 +140,7 @@ public class BattleDisplay implements GameObject {
 			Vector2.ZERO,
 			false
 		);
-		playerBust = new GraphicData(
+		dealerBust = new GraphicData(
 			ImageLoader.getInstance().getImagesMap().get(BUST_IMAGE_KEY_NAME),
 			BUST_LAYER_BASE + 1,
 			DEALER_BUST_POSITION,
@@ -207,5 +225,14 @@ public class BattleDisplay implements GameObject {
 		GraphicManager.getInstance().getTextDataList().add(dealerNameText);
 		GraphicManager.getInstance().getTextDataList().add(dealerHpText);
 		GraphicManager.getInstance().getTextDataList().add(dealerAtkText);
+	}
+	
+	/**
+	 * ボタンの表示変更
+	 * @param show 表示・非表示
+	 */
+	public void displayButton(boolean show) {
+		hitButton.setShow(show);
+		standButton.setShow(show);
 	}
 }
