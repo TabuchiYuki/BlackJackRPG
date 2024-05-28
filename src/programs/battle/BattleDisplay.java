@@ -11,6 +11,7 @@ import programs.manager.GraphicManager;
 import programs.system.FontLoader;
 import programs.system.GameObject;
 import programs.system.ImageLoader;
+import programs.system.SystemValue;
 
 /**
  * バトルシーンでの表示やアニメーションを行うクラス
@@ -134,7 +135,7 @@ public class BattleDisplay implements GameObject {
 	@Override
 	public void update() {
 		if(animating) {
-			timeCounter++;
+			timeCounter += SystemValue.REFRESH_TIME;
 			animated = true;
 			
 			switch(animType) {

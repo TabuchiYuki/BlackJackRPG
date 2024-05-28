@@ -35,6 +35,8 @@ public class BattleSystem implements GameObject {
 	private GameRules gameRules;
 	
 	private BattlePhase phase = BattlePhase.SETUP;
+	
+	private int process = 0;
 
 	/**
 	 * コンストラクタ
@@ -72,36 +74,16 @@ public class BattleSystem implements GameObject {
 	public void update() {
 		switch(phase) {
 		case SETUP:
-			if(!display.isAnimating() && !display.isAnimationEnd()) {
-				setup();
-				display.startAnimation(AnimationType.WAIT, 1d);
-			} else if(display.isAnimationEnd()) {
-				phase = BattlePhase.PLAYER;
-			}
+			setup();
 			break;
 		case PLAYER:
-			if(player.getScore() < 21 && hit.isClickedDown()) {
-				playerHit();
-			}
-			if(stand.isClickedDown()) {
-				playerStand();
-			}
+			playerTurn();
 			break;
 		case DEALER:
-			if(dealer.getScore() < 17) {
-				dealerHit();
-			} else {
-				phase = BattlePhase.ATTACK;
-			}
+			dealerTurn();
 			break;
 		case ATTACK:
-			BlackJackResult bjresult = gameRules.determineWinner(player.getScore(), dealer.getScore());
-			updateHP(bjresult);
-			if(player.getHp() <= 0 || dealer.getHp() <= 0) {
-				phase = BattlePhase.RESULT;
-			} else {
-				phase = BattlePhase.SETUP;
-			}
+			attackSequence();
 			break;
 		case RESULT:
 			break;
@@ -114,28 +96,58 @@ public class BattleSystem implements GameObject {
 	 * 準備フェーズの動作
 	 */
 	private void setup() {
-		gameRules.setupDeck();
-		
-		gameRules.playerHit();
-		gameRules.playerHit();
-		
-		gameRules.dealerHit();
-		gameRules.dealerHit();
-		
-		display.getDealerScoreText().setText("");
-		display.getPlayerScoreText().setText(Integer.toString(player.getScore()));
-		display.changeScoreColor(player.getScore(), display.getPlayerScoreText());
-		
-		display.displayButton(true);
-		if(player.getScore() < 21) {
-			hit.setChangeCursor(true);
-		} else {
-			hit.setChangeCursor(false);
-			display.hideHitButton();
+		if(!display.isAnimating() && !display.isAnimationEnd()) {
+			gameRules.setupDeck();
+			display.startAnimation(AnimationType.WAIT, 1d);
+		} else if(display.isAnimationEnd()) {
+			gameRules.playerHit();
+			gameRules.playerHit();
+			
+			gameRules.dealerHit();
+			gameRules.dealerHit();
+			
+			display.getDealerScoreText().setText("");
+			display.getPlayerScoreText().setText(Integer.toString(player.getScore()));
+			display.changeScoreColor(player.getScore(), display.getPlayerScoreText());
+			
+			display.displayButton(true);
+			if(player.getScore() < 21) {
+				hit.setChangeCursor(true);
+			} else {
+				hit.setChangeCursor(false);
+				display.hideHitButton();
+			}
+			stand.setChangeCursor(true);
+			
+			display.getAnnounceText().setText("your turn");
+			
+			process = 0;
+			phase = BattlePhase.PLAYER;
 		}
-		stand.setChangeCursor(true);
+	}
+	
+	/**
+	 * プレイヤーのターンの処理
+	 */
+	private void playerTurn() {
+		if(display.isAnimationEnd()) {
+			display.changeScoreColor(player.getScore(), display.getPlayerScoreText());
+			display.getPlayerScoreText().setText(Integer.toString(player.getScore()));
+			
+			display.displayButton(true);
+			if(player.getScore() >= 21) {
+				display.hideHitButton();
+			}
+		}
 		
-		display.getAnnounceText().setText("your turn");
+		if(!display.isAnimating()) {
+			if(player.getScore() < 21 && hit.isClickedDown()) {
+				playerHit();
+			}
+			if(stand.isClickedDown()) {
+				playerStand();
+			}
+		}
 	}
 	
 	/**
@@ -144,12 +156,8 @@ public class BattleSystem implements GameObject {
 	private void playerHit() {
 		gameRules.playerHit();
 		
-		display.changeScoreColor(player.getScore(), display.getPlayerScoreText());
-		display.getPlayerScoreText().setText(Integer.toString(player.getScore()));
-		
-		if(player.getScore() >= 21) {
-			display.hideHitButton();
-		}
+		display.displayButton(false);
+		display.startAnimation(AnimationType.PLAYER_HIT, 0.5d);
 	}
 	
 	/**
@@ -170,6 +178,27 @@ public class BattleSystem implements GameObject {
 	}
 	
 	/**
+	 * ディーラーのターンの処理
+	 */
+	private void dealerTurn() {
+		if(process == 0) {
+			if(!display.isAnimating() && !display.isAnimationEnd()) {
+				display.startAnimation(AnimationType.WAIT, 0.5d);
+			} else if(display.isAnimationEnd()) {
+				if(dealer.getScore() < 17) {
+					dealerHit();
+				} else {
+					phase = BattlePhase.ATTACK;
+				}
+			}
+		} else if(process == 1) {
+			if(display.isAnimationEnd()) {
+				process = 0;
+			}
+		}
+	}
+	
+	/**
 	 * ディーラーのヒットの処理
 	 */
 	private void dealerHit() {
@@ -177,6 +206,22 @@ public class BattleSystem implements GameObject {
 		
 		display.getDealerScoreText().setText(Integer.toString(dealer.getScore()));
 		display.changeScoreColor(dealer.getScore(), display.getDealerScoreText());
+		
+		process = 1;
+		display.startAnimation(AnimationType.DEALER_HIT, 0.5d);
+	}
+	
+	/**
+	 * 攻撃の処理
+	 */
+	private void attackSequence() {
+		BlackJackResult bjresult = gameRules.determineWinner(player.getScore(), dealer.getScore());
+		updateHP(bjresult);
+		if(player.getHp() <= 0 || dealer.getHp() <= 0) {
+			phase = BattlePhase.RESULT;
+		} else {
+			phase = BattlePhase.SETUP;
+		}
 	}
 
 	/**

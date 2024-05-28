@@ -26,15 +26,7 @@ import programs.system.SystemValue;
  * @author 田淵勇輝
  */
 public class GameManager {
-	private static final double REFRESH_TIME = 1.0d / (double)SystemValue.REFRESH_RATE;
 	private static final int FIRST_LOAD_SCENE_INDEX = 0;
-	
-	/**
-	 * リフレッシュタイムのゲッター
-	 * @see {@link #REFRESH_TIME}
-	 * @return リフレッシュタイム
-	 */
-	public double getRefreshTime() { return REFRESH_TIME; }
 	
 	/**
 	 * エントリポイント
@@ -81,7 +73,7 @@ public class GameManager {
 						jokerRotateHalfLoop = false;
 						jokerRotateProgress = -0.5d;
 					} else {
-						jokerRotateProgress -= REFRESH_TIME;
+						jokerRotateProgress -= SystemValue.REFRESH_TIME;
 					}
 					jokerGra.setShear(new Vector2(0.0d, 0.15d - (0.3d * Math.abs(jokerRotateProgress))));
 				} else {
@@ -89,7 +81,7 @@ public class GameManager {
 						jokerRotateHalfLoop = true;
 						jokerRotateProgress = 0.5d;
 					} else {
-						jokerRotateProgress += REFRESH_TIME;
+						jokerRotateProgress += SystemValue.REFRESH_TIME;
 					}
 					jokerGra.setShear(new Vector2(0.0d, -0.15d + (0.3d * Math.abs(jokerRotateProgress))));
 				}
@@ -102,7 +94,7 @@ public class GameManager {
 						text += ".";
 					}
 					loadText.setText(text);
-					loadTextTimer += REFRESH_TIME;
+					loadTextTimer += SystemValue.REFRESH_TIME;
 				} else {
 					loadTextTimer -= 1.2d;
 				}

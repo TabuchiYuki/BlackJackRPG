@@ -14,6 +14,10 @@ public class SystemValue {
 	 */
 	public static final int REFRESH_RATE = 60;
 	/**
+	 * 単位リフレッシュフレームの経過時間
+	 */
+	public static final double REFRESH_TIME = 1.0d / (double) REFRESH_RATE;
+	/**
 	 * ウィンドウの幅
 	 */
 	public static final int WINDOW_WIDTH = 800;
