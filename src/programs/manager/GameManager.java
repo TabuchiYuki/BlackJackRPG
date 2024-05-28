@@ -26,8 +26,7 @@ import programs.system.SystemValue;
  * @author 田淵勇輝
  */
 public class GameManager {
-	private static final int REFRESH_RATE = 60;
-	private static final double REFRESH_TIME = 1.0d / (double)REFRESH_RATE;
+	private static final double REFRESH_TIME = 1.0d / (double)SystemValue.REFRESH_RATE;
 	private static final int FIRST_LOAD_SCENE_INDEX = 0;
 	
 	/**
@@ -52,7 +51,7 @@ public class GameManager {
 		graMgr.getTextDataList().add(loadText);
 		
 		WindowManager.getInstance().getFrame().getContentPane().add(graMgr);
-		WindowManager.getInstance().createWindow("「21」～ギャンブラーの戦い～", 800, 600);
+		WindowManager.getInstance().createWindow(SystemValue.GAME_TITLE, SystemValue.WINDOW_WIDTH, SystemValue.WINDOW_HEIGHT);
 		
 		// マルチスレッドで初期化処理を行う
 		SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
@@ -110,7 +109,7 @@ public class GameManager {
 				
 				// 描画
 				graMgr.repaint();
-				Thread.sleep(1000/REFRESH_RATE);
+				Thread.sleep(1000/SystemValue.REFRESH_RATE);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -140,9 +139,9 @@ public class GameManager {
 					if(curtMeasureFrame == 0) {
 						startMeasureTime = System.currentTimeMillis();
 						curtMeasureFrame++;
-					} else if(curtMeasureFrame == REFRESH_RATE) {
+					} else if(curtMeasureFrame == SystemValue.REFRESH_RATE) {
 						long endMeasureTime = System.currentTimeMillis();
-						double frameRate = 1.0d / ((double) (endMeasureTime - startMeasureTime) / 1000d) * (double) REFRESH_RATE;
+						double frameRate = 1.0d / ((double) (endMeasureTime - startMeasureTime) / 1000d) * (double) SystemValue.REFRESH_RATE;
 						
 						graMgr.setFrameRate(frameRate);
 						curtMeasureFrame = 0;
@@ -165,7 +164,7 @@ public class GameManager {
 				
 				// 描画更新
 				graMgr.repaint();
-				Thread.sleep(1000/REFRESH_RATE);
+				Thread.sleep(1000/SystemValue.REFRESH_RATE);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

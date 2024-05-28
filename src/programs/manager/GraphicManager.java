@@ -38,7 +38,7 @@ public class GraphicManager extends JPanel {
 	 * プライベートコンストラクタ
 	 */
 	private GraphicManager() {
-		setPreferredSize(new Dimension(800, 600));
+		setPreferredSize(new Dimension(SystemValue.WINDOW_WIDTH, SystemValue.WINDOW_HEIGHT));
 	}
 	
 	/**
