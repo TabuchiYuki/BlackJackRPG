@@ -2,9 +2,13 @@ package programs.manager;
 
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Objects;
 
 import javax.swing.JFrame;
+
+import programs.system.ImageLoader;
 
 /**
  * ウィンドウの管理をするシングルトンクラス
@@ -73,6 +77,18 @@ public class WindowManager{
 	 */
 	private void createFrame(String title, int width, int height) {
 		frame.setTitle(title);
+		
+		// アイコン画像取得
+		BufferedImage icon;
+		try {
+			icon = ImageLoader.getInstance().loadImage("bjicon.png");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		// アイコン設定
+		frame.setIconImage(icon);
 		
 		// ウィンドウを閉じた時に処理を終了する設定
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
