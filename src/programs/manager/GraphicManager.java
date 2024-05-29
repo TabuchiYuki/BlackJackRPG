@@ -80,7 +80,6 @@ public class GraphicManager extends JPanel {
         originalScaleX = g2d.getTransform().getScaleX();
         originalScaleY = g2d.getTransform().getScaleY();
         
-        // 画像の表示
         graphicDataList.forEach(gd -> {
         	if(gd.isShow()) {
         		transformImage(g2d, gd);

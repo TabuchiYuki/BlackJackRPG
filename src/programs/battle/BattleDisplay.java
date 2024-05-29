@@ -2,11 +2,15 @@ package programs.battle;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import programs.data.AnimationType;
+import programs.data.BlackJackResult;
 import programs.data.GraphicData;
 import programs.data.TextGraphicData;
 import programs.data.Vector2;
+import programs.data.master.Card;
 import programs.manager.GraphicManager;
 import programs.system.FontLoader;
 import programs.system.GameObject;
@@ -35,10 +39,14 @@ public class BattleDisplay implements GameObject {
 	private final int CARD_SPLIT_HORIZONTAL = 13;
 	private final int CARD_SPLIT_VERTICAL = 5;
 	
+	private final double DEALER_CARD_ROTATION = 180.0d;
+	
 	private final int CARD_LAYER_BASE = 1000;
 	private final int BUTTON_LAYER_BASE = 2000;
 	private final int BUST_LAYER_BASE = 3000;
 	private final int RESULT_LAYER_BASE = 4000;
+	private final int PLAYER_CARD_RELATIVE_LAYER_BASE = 100;
+	private final int DEALER_CARD_RELATIVE_LAYER_BASE = 200;
 	
 	private final Vector2 CENTER_POSITION = new Vector2(400, 300);
 	
@@ -56,16 +64,19 @@ public class BattleDisplay implements GameObject {
 	
 	private final Vector2 DECK_CARD_POSITION = new Vector2(100, 150);
 	private final Vector2 PLAYER_CARD_LEFT_POSITION = new Vector2(320, 500);
-	private final Vector2 PLAYER_CARD_RIGHT_POSITION = new Vector2(480, 500);
+	private final Vector2 PLAYER_CARD_RIGHT_DISTANCE = new Vector2(160, 0);
 	private final Vector2 DEALER_CARD_LEFT_POSITION = new Vector2(320, 100);
-	private final Vector2 DEALER_CARD_RIGHT_POSITION = new Vector2(480, 100);
+	private final Vector2 DEALER_CARD_RIGHT_DISTANCE = new Vector2(160, 0);
 	private final Vector2 CARD_SCALE = new Vector2(0.3d, 0.3d);
 	
 	private final Vector2 PLAYER_BUST_POSITION = new Vector2(400, 500);
 	private final Vector2 DEALER_BUST_POSITION = new Vector2(400, 100);
+	private final Vector2 BUST_SCALE = new Vector2(0.5d, 0.5d);
 	
 	private final Vector2 HIT_BUTTON_POSITION = new Vector2(680, 430);
 	private final Vector2 STAND_BUTTON_POSITION = new Vector2(680, 540);
+	
+	private final Vector2 FLIP_CARD_MAX_SHEAR = new Vector2(0, 0.3d);
 	
 	private final Color SCORE_NORMAL_COLOR = new Color(64, 127, 255);
 	private final Color SCORE_PERFECT_COLOR = new Color(255, 255, 0);
@@ -87,6 +98,17 @@ public class BattleDisplay implements GameObject {
 	private TextGraphicData damageText;
 	private TextGraphicData announceText;
 	
+	private List<GraphicData> playerCards = new ArrayList<>();
+	private List<GraphicData> dealerCards = new ArrayList<>();
+	
+	private Card[] firstCards = new Card[4];
+	private Card hitCard;
+	private int atk;
+	private boolean playerWin;
+	
+	private List<Vector2> tmpVector = new ArrayList<>();
+	private boolean tmpFlag;
+	
 	private AnimationType animType;
 	
 	private boolean animating = false;
@@ -96,18 +118,20 @@ public class BattleDisplay implements GameObject {
 	private double animTime;
 	private double timeCounter;
 	
+	private BlackJackResult bjResult;
+	
 	/**
-	 * アニメーション中かの判定のゲッター
-	 * @see {@link #animating}
-	 * @return アニメーション中かの判定
+	 * プレイヤーのバースト表示のゲッター
+	 * @see {@link #playerBust}
+	 * @return プレイヤーのバースト表示
 	 */
-	public boolean isAnimating() { return animating; }
+	public GraphicData getPlayerBust() { return playerBust; }
 	/**
-	 * アニメーション終了判定のゲッター
-	 * @see {@link #animationEnd}
-	 * @return アニメーション終了判定
+	 * ディーラーのバースト表示のゲッター
+	 * @see {@link #dealerBust}
+	 * @return ディーラーのバースト表示
 	 */
-	public boolean isAnimationEnd() { return animationEnd; }
+	public GraphicData getDealerBust() { return dealerBust; }
 	/**
 	 * プレイヤースコアのテキストのゲッター
 	 * @see {@link #playerScoreText}
@@ -126,6 +150,49 @@ public class BattleDisplay implements GameObject {
 	 * @return アナウンステキスト
 	 */
 	public TextGraphicData getAnnounceText() { return announceText; }
+	/**
+	 * アニメーション中かの判定のゲッター
+	 * @see {@link #animating}
+	 * @return アニメーション中かの判定
+	 */
+	public boolean isAnimating() { return animating; }
+	/**
+	 * アニメーション終了判定のゲッター
+	 * @see {@link #animationEnd}
+	 * @return アニメーション終了判定
+	 */
+	public boolean isAnimationEnd() { return animationEnd; }
+	
+	/**
+	 * 最初に分配されるカードのセッター
+	 * @see {@link #firstCards}
+	 * @param firstCards 最初に分配されるカード
+	 */
+	public void setFirstCards(Card[] firstCards) { this.firstCards = firstCards; }
+	/**
+	 * ヒットしたカードのデータのセッター
+	 * @see {@link #hitCard}
+	 * @param hitCard ヒットしたカードのデータ
+	 */
+	public void setHitCard(Card hitCard) { this.hitCard = hitCard; }
+	/**
+	 * 攻撃力のセッター
+	 * @see {@link #atk}
+	 * @param atk 攻撃力
+	 */
+	public void setAtk(int atk) { this.atk = atk; }
+	/**
+	 * ブラックジャックの結果のセッター
+	 * @see {@link #bjResult}
+	 * @param bjResult ブラックジャックの結果
+	 */
+	public void setBjResult(BlackJackResult bjResult) { this.bjResult = bjResult; }
+	/**
+	 * プレイヤー勝利判定のセッター
+	 * @see {@link #playerWin}
+	 * @param playerWin プレイヤー勝利判定
+	 */
+	public void setPlayerWin(boolean playerWin) { this.playerWin = playerWin; }
 	
 	@Override
 	public void init() {
@@ -134,46 +201,7 @@ public class BattleDisplay implements GameObject {
 	
 	@Override
 	public void update() {
-		if(animating) {
-			timeCounter += SystemValue.REFRESH_TIME;
-			animated = true;
-			
-			switch(animType) {
-			case WAIT:
-				waitOnly();
-				break;
-			case DISTRIBUTE_FROM_DECK:
-				distribution();
-				break;
-			case BACK_TO_DECK:
-				backToDeck();
-				break;
-			case PLAYER_HIT:
-				playerHit();
-				break;
-			case SHOW_DEALERS_CARD:
-				showDealersCard();
-				break;
-			case DEALER_HIT:
-				dealerHit();
-				break;
-			case ATTACK_AND_DAMAGE:
-				attack();
-				break;
-			case SHOW_RESULT:
-				showResult();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		if(animated && !animating) {
-			animated = false;
-			animationEnd = true;
-		} else {
-			animationEnd = false;
-		}
+		animationUpdater();
 	}
 	
 	/**
@@ -240,7 +268,7 @@ public class BattleDisplay implements GameObject {
 			ImageLoader.getInstance().getImagesMap().get(BUST_IMAGE_KEY_NAME),
 			BUST_LAYER_BASE,
 			PLAYER_BUST_POSITION,
-			Vector2.ONE,
+			BUST_SCALE,
 			0,
 			Vector2.ZERO,
 			false
@@ -249,7 +277,7 @@ public class BattleDisplay implements GameObject {
 			ImageLoader.getInstance().getImagesMap().get(BUST_IMAGE_KEY_NAME),
 			BUST_LAYER_BASE + 1,
 			DEALER_BUST_POSITION,
-			Vector2.ONE,
+			BUST_SCALE,
 			0,
 			Vector2.ZERO,
 			false
@@ -390,6 +418,56 @@ public class BattleDisplay implements GameObject {
 	}
 	
 	/**
+	 * アニメーションの更新を行う
+	 */
+	private void animationUpdater() {
+		if(animating) {
+			animated = true;
+			
+			switch(animType) {
+			case WAIT:
+				waitOnly();
+				break;
+			case DISTRIBUTE_FROM_DECK:
+				distribution();
+				break;
+			case BACK_TO_DECK:
+				backToDeck();
+				break;
+			case PLAYER_HIT:
+				playerHit();
+				break;
+			case SHOW_DEALERS_CARD:
+				showDealersCard();
+				break;
+			case DEALER_HIT:
+				dealerHit();
+				break;
+			case ATTACK_AND_DAMAGE:
+				attack();
+				break;
+			case SHOW_RESULT:
+				showResult();
+				break;
+			default:
+				break;
+			}
+			
+			timeCounter += SystemValue.REFRESH_TIME;
+		}
+		
+		if(animated && !animating) {
+			// アニメーション終了フレーム
+			tmpVector.clear();
+			tmpFlag = false;
+			animated = false;
+			animationEnd = true;
+		} else {
+			animationEnd = false;
+		}
+	}
+	
+	/**
 	 * アニメーションを開始する
 	 * @param animationType アニメーションの種類
 	 * @param animationTime アニメーションの時間
@@ -415,8 +493,79 @@ public class BattleDisplay implements GameObject {
 	 * 手札の分配アニメーション
 	 */
 	private void distribution() {
-		if(animTime <= timeCounter) {
+		Vector2[] targetPos = {
+			PLAYER_CARD_LEFT_POSITION,
+			PLAYER_CARD_LEFT_POSITION.add(PLAYER_CARD_RIGHT_DISTANCE),
+			DEALER_CARD_LEFT_POSITION,
+			DEALER_CARD_LEFT_POSITION.add(DEALER_CARD_RIGHT_DISTANCE),
+		};
+		
+		if(timeCounter == 0) {
+			// 手札の画像を追加
+			for(int i = 0; i < 4; i++) {
+				int layer;
+				
+				if(i < 2) {
+					layer = CARD_LAYER_BASE + PLAYER_CARD_RELATIVE_LAYER_BASE + playerCards.size();
+				} else {
+					layer = CARD_LAYER_BASE + DEALER_CARD_RELATIVE_LAYER_BASE + dealerCards.size();
+				}
+				
+				BufferedImage cardImg;
+				if(i == 3) {
+					cardImg = ImageLoader.getInstance().imageSplit(cardCells, CARD_SPLIT_HORIZONTAL, CARD_SPLIT_VERTICAL, 0, 4);
+				} else {
+					cardImg = splitCardImage(firstCards[i]);
+				}
+				
+				GraphicData card = new GraphicData(
+					cardImg,
+					layer,
+					DECK_CARD_POSITION,
+					CARD_SCALE,
+					0,
+					Vector2.ZERO,
+					true
+				);
+				
+				if(i < 2) {
+					playerCards.add(card);
+				} else {
+					dealerCards.add(card);
+				}
+				
+				GraphicManager.getInstance().getGraphicDataList().add(card);
+			}
+			GraphicManager.getInstance().sortLayer();
+		} else if(animTime <= timeCounter) {
+			// 最終的なポジションに設置
+			for(int i = 0; i < 4; i++) {
+				if(i < 2) {
+					playerCards.get(i).setPosition(targetPos[i]);
+				} else {
+					dealerCards.get(i - 2).setPosition(targetPos[i]);
+				}
+			}
 			animating = false;
+		} else {
+			// イージングしながら移動
+			for(int i = 0; i < 4; i++) {
+				if(i < 2) {
+					playerCards.get(i).setPosition(
+						new Vector2(
+							easingIn(DECK_CARD_POSITION.getX(), targetPos[i].getX(), timeCounter, animTime),
+							easingIn(DECK_CARD_POSITION.getY(), targetPos[i].getY(), timeCounter, animTime)
+						)
+					);
+				} else {
+					dealerCards.get(i - 2).setPosition(
+						new Vector2(
+							easingIn(DECK_CARD_POSITION.getX(), targetPos[i].getX(), timeCounter, animTime),
+							easingIn(DECK_CARD_POSITION.getY(), targetPos[i].getY(), timeCounter, animTime)
+						)
+					);
+				}
+			}
 		}
 	}
 	
@@ -424,8 +573,46 @@ public class BattleDisplay implements GameObject {
 	 * 手札をデッキに戻すアニメーション
 	 */
 	private void backToDeck() {
-		if(animTime <= timeCounter) {
+		if(timeCounter == 0) {
+			// 最初のポジションの保管
+			playerCards.forEach((pc) -> {
+				tmpVector.add(pc.getPosition());
+			});
+			dealerCards.forEach((pc) -> {
+				tmpVector.add(pc.getPosition());
+			});
+		} else if(animTime <= timeCounter) {
+			// リストから削除
+			playerCards.forEach((pc) -> {
+				GraphicManager.getInstance().getGraphicDataList().remove(pc);
+			});
+			dealerCards.forEach((pc) -> {
+				GraphicManager.getInstance().getGraphicDataList().remove(pc);
+			});
+			GraphicManager.getInstance().sortLayer();
+			
+			playerCards.clear();
+			dealerCards.clear();
+			
 			animating = false;
+		} else {
+			// イージングしながら移動
+			for(int i = 0; i < playerCards.size(); i++) {
+				playerCards.get(i).setPosition(
+					new Vector2(
+						easingIn(tmpVector.get(i).getX(), DECK_CARD_POSITION.getX(), timeCounter, animTime),
+						easingIn(tmpVector.get(i).getY(), DECK_CARD_POSITION.getY(), timeCounter, animTime)
+					)
+				);
+			}
+			for(int i = 0; i < dealerCards.size(); i++) {
+				dealerCards.get(i).setPosition(
+					new Vector2(
+						easingIn(tmpVector.get(i + playerCards.size()).getX(), DECK_CARD_POSITION.getX(), timeCounter, animTime),
+						easingIn(tmpVector.get(i + playerCards.size()).getY(), DECK_CARD_POSITION.getY(), timeCounter, animTime)
+					)
+				);
+			}
 		}
 	}
 	
@@ -433,8 +620,51 @@ public class BattleDisplay implements GameObject {
 	 * プレイヤーのヒットのアニメーション
 	 */
 	private void playerHit() {
-		if(animTime <= timeCounter) {
+		// 最終的なポジションを取得
+		Vector2[] targetPos = new Vector2[playerCards.size()];
+		if(!playerCards.isEmpty()) {
+			for(int i = 0; i < targetPos.length; i++) {
+				double distanceRate = (double) i / (double) (targetPos.length - 1);
+				targetPos[i] = PLAYER_CARD_LEFT_POSITION.add(PLAYER_CARD_RIGHT_DISTANCE.multiply(distanceRate));
+			}
+		}
+		
+		if(timeCounter == 0) {
+			// 手札の画像を追加
+			BufferedImage hitCardImg = splitCardImage(hitCard);
+			GraphicData newHit = new GraphicData(
+				hitCardImg,
+				CARD_LAYER_BASE + PLAYER_CARD_RELATIVE_LAYER_BASE + playerCards.size(),
+				DECK_CARD_POSITION,
+				CARD_SCALE,
+				0,
+				Vector2.ZERO,
+				true
+			);
+			playerCards.add(newHit);
+			GraphicManager.getInstance().getGraphicDataList().add(newHit);
+			GraphicManager.getInstance().sortLayer();
+			
+			// 最初のポジションの保管
+			playerCards.forEach((pc) -> {
+				tmpVector.add(pc.getPosition());
+			});
+		} else if(animTime <= timeCounter) {
+			// 最終的なポジションに設置
+			for(int i = 0; i < playerCards.size(); i++) {
+				playerCards.get(i).setPosition(targetPos[i]);
+			}
 			animating = false;
+		} else {
+			// イージングしながら移動
+			for(int i = 0; i < playerCards.size(); i++) {
+				playerCards.get(i).setPosition(
+					new Vector2(
+						easingIn(tmpVector.get(i).getX(), targetPos[i].getX(), timeCounter, animTime),
+						easingIn(tmpVector.get(i).getY(), targetPos[i].getY(), timeCounter, animTime)
+					)
+				);
+			}
 		}
 	}
 	
@@ -442,8 +672,45 @@ public class BattleDisplay implements GameObject {
 	 * ディーラーのカードを公開するアニメーション
 	 */
 	private void showDealersCard() {
-		if(animTime <= timeCounter) {
+		if(animTime / 2d > timeCounter) {
+			dealerCards.get(1).setShear(
+				new Vector2(
+					FLIP_CARD_MAX_SHEAR.getX() * timeCounter / (animTime / 2),
+					FLIP_CARD_MAX_SHEAR.getY() * timeCounter / (animTime / 2)
+				)
+			);
+			dealerCards.get(1).setScale(
+				new Vector2(
+					CARD_SCALE.getX() - timeCounter / (animTime / 2) * CARD_SCALE.getX(),
+					CARD_SCALE.getX()
+				)
+			);
+		} else if(animTime <= timeCounter) {
+			// 元の形に戻す
+			dealerCards.get(1).setShear(Vector2.ZERO);
+			dealerCards.get(1).setScale(CARD_SCALE);
+			
 			animating = false;
+		} else{
+			// カードの画像を変更
+			if(!tmpFlag) {
+				BufferedImage card = splitCardImage(firstCards[3]);
+				dealerCards.get(1).setImage(card);
+				tmpFlag = true;
+			}
+			
+			dealerCards.get(1).setShear(
+				new Vector2(
+					-(FLIP_CARD_MAX_SHEAR.getX() - FLIP_CARD_MAX_SHEAR.getX() * (timeCounter - animTime / 2d) / (animTime / 2)),
+					-(FLIP_CARD_MAX_SHEAR.getY() - FLIP_CARD_MAX_SHEAR.getY() * (timeCounter - animTime / 2d) / (animTime / 2))
+				)
+			);
+			dealerCards.get(1).setScale(
+				new Vector2(
+					(timeCounter - animTime / 2d) / (animTime / 2) * CARD_SCALE.getX(),
+					CARD_SCALE.getY()
+				)
+			);
 		}
 	}
 	
@@ -451,8 +718,51 @@ public class BattleDisplay implements GameObject {
 	 * ディーラーのヒットのアニメーション
 	 */
 	private void dealerHit() {
-		if(animTime <= timeCounter) {
+		// 最終的なポジションを取得
+		Vector2[] targetPos = new Vector2[dealerCards.size()];
+		if(!dealerCards.isEmpty()) {
+			for(int i = 0; i < targetPos.length; i++) {
+				double distanceRate = (double) i / (double) (targetPos.length - 1);
+				targetPos[i] = DEALER_CARD_LEFT_POSITION.add(DEALER_CARD_RIGHT_DISTANCE.multiply(distanceRate));
+			}
+		}
+		
+		if(timeCounter == 0) {
+			// 手札の画像を追加
+			BufferedImage hitCardImg = splitCardImage(hitCard);
+			GraphicData newHit = new GraphicData(
+				hitCardImg,
+				CARD_LAYER_BASE + DEALER_CARD_RELATIVE_LAYER_BASE + dealerCards.size(),
+				DECK_CARD_POSITION,
+				CARD_SCALE,
+				0,
+				Vector2.ZERO,
+				true
+			);
+			dealerCards.add(newHit);
+			GraphicManager.getInstance().getGraphicDataList().add(newHit);
+			GraphicManager.getInstance().sortLayer();
+			
+			// 最初のポジションの保管
+			dealerCards.forEach((pc) -> {
+				tmpVector.add(pc.getPosition());
+			});
+		} else if(animTime <= timeCounter) {
+			// 最終的なポジションに設置
+			for(int i = 0; i < dealerCards.size(); i++) {
+				dealerCards.get(i).setPosition(targetPos[i]);
+			}
 			animating = false;
+		} else {
+			// イージングしながら移動
+			for(int i = 0; i < dealerCards.size(); i++) {
+				dealerCards.get(i).setPosition(
+					new Vector2(
+						easingIn(tmpVector.get(i).getX(), targetPos[i].getX(), timeCounter, animTime),
+						easingIn(tmpVector.get(i).getY(), targetPos[i].getY(), timeCounter, animTime)
+					)
+				);
+			}
 		}
 	}
 	
@@ -460,8 +770,33 @@ public class BattleDisplay implements GameObject {
 	 * 攻撃のアニメーション
 	 */
 	private void attack() {
-		if(animTime <= timeCounter) {
+		if(timeCounter == 0) {
+			switch(bjResult) {
+			case VICTORY:
+				damageText.setPosition(DEALER_DAMAGE_POSITION);
+				break;
+			case DEFEAT:
+				damageText.setPosition(PLAYER_DAMAGE_POSITION);
+				break;
+			default:
+				animating = false;
+				return;
+			}
+			damageText.setText("-" + Integer.toString(atk));
+			damageText.setColor(Color.RED);
+		} else if(animTime <= timeCounter) {
+			damageText.setText("");
 			animating = false;
+		} else if(animTime / 2d <= timeCounter) {
+			
+			damageText.setColor(
+				new Color(
+					damageText.getColor().getRed(),
+					damageText.getColor().getGreen(),
+					damageText.getColor().getBlue(),
+					(int) (255d * (1d - (timeCounter - animTime / 2d) / (animTime / 2)))
+				)
+			);
 		}
 	}
 	
@@ -469,8 +804,68 @@ public class BattleDisplay implements GameObject {
 	 * 戦闘結果の表示アニメーション
 	 */
 	private void showResult() {
-		if(animTime <= timeCounter) {
+		if(timeCounter == 0) {
+			if(!playerWin) {
+				result.setImage(ImageLoader.getInstance().getImagesMap().get(LOSE_IMAGE_KEY_NAME));
+			}
+			
+			announceText.setText("");
+			playerScoreText.setText("");
+			dealerScoreText.setText("");
+			
+			result.setScale(Vector2.ZERO);
+			result.setShow(true);
+		} else if(animTime <= timeCounter) {
+			result.setScale(Vector2.ONE);
 			animating = false;
+		} else {
+			result.setScale(
+				new Vector2(
+					easingIn(0, 1, timeCounter, animTime),
+					easingIn(0, 1, timeCounter, animTime)
+				)
+			);
 		}
+	}
+	
+	/**
+	 * カードのデータからカード1枚の画像を抜き取る
+	 * @param card カードのデータ
+	 * @return カードの画像
+	 */
+	private BufferedImage splitCardImage(Card card) {
+		int suitNum;
+		switch(card.suit()) {
+		case SPADE:
+			suitNum = 0;
+			break;
+		case CLOVER:
+			suitNum = 1;
+			break;
+		case DIAMOND:
+			suitNum = 2;
+			break;
+		case HEART:
+			suitNum = 3;
+			break;
+		default:
+			System.out.println("スートが不正な値です");
+			return null;
+		}
+		return ImageLoader.getInstance().imageSplit(cardCells, CARD_SPLIT_HORIZONTAL, CARD_SPLIT_VERTICAL, card.rank() - 1, suitNum);
+	}
+	
+	/**
+	 * イージングイン
+	 * @param start 開始の値
+	 * @param target 目的の値
+	 * @param curtTime 現在の時間
+	 * @param endTime 終了時間
+	 * @return イージングされた値
+	 */
+	private double easingIn(double start, double target, double curtTime, double endTime) {
+		double t = curtTime / endTime;
+		double easingFactor = t * t * (3 - 2 * t);
+		return start + (target - start) * easingFactor;
 	}
 }

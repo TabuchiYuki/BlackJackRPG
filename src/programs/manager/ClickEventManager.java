@@ -87,8 +87,8 @@ public class ClickEventManager {
 		Insets insets = frame.getInsets();
 		clickEventsMap.forEach((k, v) -> {
 			Rectangle eventArea = new Rectangle(
-				insets.left + (int) v.getPosition().getX(), (int) v.getPosition().getY(),
-				insets.top + (int) v.getArea().getX(), (int) v.getArea().getY()
+				insets.left + (int) v.getPosition().getX(), insets.top + (int) v.getPosition().getY(),
+				(int) v.getArea().getX(), (int) v.getArea().getY()
 			);
 			
 			if(eventArea.contains(e.getPoint())) {
