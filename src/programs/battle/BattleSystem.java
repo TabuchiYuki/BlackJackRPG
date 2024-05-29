@@ -348,7 +348,7 @@ public class BattleSystem implements GameObject {
 			if(curtGrade == DifficultyGrade.LOW && grade == 0) {
 				SaveManager.getInstance().getSaveData().setGrade(DifficultyGrade.MIDDLE);
 				SaveManager.getInstance().save();
-			} else if(curtGrade == DifficultyGrade.MIDDLE && grade == 0) {
+			} else if(curtGrade == DifficultyGrade.MIDDLE && grade == 1) {
 				SaveManager.getInstance().getSaveData().setGrade(DifficultyGrade.HIGH);
 			}
 		}
