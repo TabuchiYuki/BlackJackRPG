@@ -83,7 +83,7 @@ public class BattleDisplay implements GameObject {
 	private final Vector2 FLIP_CARD_MAX_SHEAR = new Vector2(0, 0.3d);
 	
 	private final Color SCORE_NORMAL_COLOR = new Color(64, 127, 255);
-	private final Color SCORE_PERFECT_COLOR = new Color(255, 255, 0);
+	private final Color SCORE_PERFECT_COLOR = new Color(255, 100, 0);
 	private final Color SCORE_BUST_COLOR = new Color(100, 100, 100);
 	
 	// フィールド
