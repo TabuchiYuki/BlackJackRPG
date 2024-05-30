@@ -97,8 +97,12 @@ public class BattleDisplay implements GameObject {
 	private GraphicData dealerBust;
 	private GraphicData result;
 	
+	private TextGraphicData playerNameText;
+	private TextGraphicData dealerNameText;
 	private TextGraphicData playerHpText;
 	private TextGraphicData dealerHpText;
+	private TextGraphicData playerAtkText;
+	private TextGraphicData dealerAtkText;
 	private TextGraphicData playerScoreText;
 	private TextGraphicData dealerScoreText;
 	private TextGraphicData deckNumText;
@@ -347,7 +351,7 @@ public class BattleDisplay implements GameObject {
 	 * @param dealerAtk ディーラーの攻撃力
 	 */
 	public void showStatus(int playerHp, int playerAtk, int dealerHp, int dealerAtk) {
-		TextGraphicData playerNameText = new TextGraphicData(
+		playerNameText = new TextGraphicData(
 			"player",
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
@@ -363,7 +367,7 @@ public class BattleDisplay implements GameObject {
 			Color.WHITE,
 			false
 		);
-		TextGraphicData playerAtkText = new TextGraphicData(
+		playerAtkText = new TextGraphicData(
 			String.format("atk:%d", playerAtk),
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
@@ -371,7 +375,7 @@ public class BattleDisplay implements GameObject {
 			Color.WHITE,
 			false
 		);
-		TextGraphicData dealerNameText = new TextGraphicData(
+		dealerNameText = new TextGraphicData(
 			"dealer",
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
@@ -387,7 +391,7 @@ public class BattleDisplay implements GameObject {
 			Color.WHITE,
 			false
 		);
-		TextGraphicData dealerAtkText = new TextGraphicData(
+		dealerAtkText = new TextGraphicData(
 			String.format("atk:%d", dealerAtk),
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
 			STATUS_TEXT_FONT_SIZE,
@@ -926,9 +930,17 @@ public class BattleDisplay implements GameObject {
 				result.setImage(ImageLoader.getInstance().getImagesMap().get(LOSE_IMAGE_KEY_NAME));
 			}
 			
+			// テキストを非表示にする
 			announceText.setText("");
 			playerScoreText.setText("");
 			dealerScoreText.setText("");
+			playerNameText.setText("");
+			dealerNameText.setText("");
+			playerHpText.setText("");
+			dealerHpText.setText("");
+			playerAtkText.setText("");
+			dealerAtkText.setText("");
+			deckNumText.setText("");
 			
 			result.setScale(Vector2.ZERO);
 			result.setShow(true);
