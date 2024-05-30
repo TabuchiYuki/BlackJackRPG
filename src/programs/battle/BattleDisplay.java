@@ -39,7 +39,7 @@ public class BattleDisplay implements GameObject {
 	private final int CARD_SPLIT_HORIZONTAL = 13;
 	private final int CARD_SPLIT_VERTICAL = 5;
 	
-	private final double DEALER_CARD_ROTATION = 180.0d;
+	private final double TALON_CARD_ROTATION = 90.0d;
 	
 	private final int CARD_LAYER_BASE = 1000;
 	private final int BUTTON_LAYER_BASE = 2000;
@@ -62,7 +62,8 @@ public class BattleDisplay implements GameObject {
 	private final Vector2 PLAYER_SCORE_POSITION = new Vector2(400, 430);
 	private final Vector2 DEALER_SCORE_POSITION = new Vector2(400, 200);
 	
-	private final Vector2 DECK_CARD_POSITION = new Vector2(100, 150);
+	private final Vector2 DECK_CARD_POSITION = new Vector2(80, 300);
+	private final Vector2 TALON_CARD_POSITION = new Vector2(100, 100);
 	private final Vector2 PLAYER_CARD_LEFT_POSITION = new Vector2(320, 500);
 	private final Vector2 PLAYER_CARD_RIGHT_DISTANCE = new Vector2(160, 0);
 	private final Vector2 DEALER_CARD_LEFT_POSITION = new Vector2(320, 100);
@@ -84,7 +85,9 @@ public class BattleDisplay implements GameObject {
 	
 	// フィールド
 	private BufferedImage cardCells;
+	private BufferedImage cardBack;
 	
+	private GraphicData talon;
 	private GraphicData hitButton;
 	private GraphicData standButton;
 	private GraphicData playerBust;
@@ -209,6 +212,8 @@ public class BattleDisplay implements GameObject {
 	 */
 	public void setupGraphic() {
 		cardCells = ImageLoader.getInstance().getImagesMap().get(CARD_CELL_IMAGE_KEY_NAME);
+		cardBack = ImageLoader.getInstance().imageSplit(cardCells, CARD_SPLIT_HORIZONTAL, CARD_SPLIT_VERTICAL, 0, 4);
+		
 		damageText = new TextGraphicData(
 			"",
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
@@ -292,13 +297,22 @@ public class BattleDisplay implements GameObject {
 			false
 		);
 		GraphicData deckCard = new GraphicData(
-			ImageLoader.getInstance().imageSplit(cardCells, CARD_SPLIT_HORIZONTAL, CARD_SPLIT_VERTICAL, 0, 4),
+			cardBack,
 			CARD_LAYER_BASE,
 			DECK_CARD_POSITION,
 			CARD_SCALE,
 			0,
 			Vector2.ZERO,
 			true
+		);
+		talon = new GraphicData(
+			cardBack,
+			CARD_LAYER_BASE + 1,
+			TALON_CARD_POSITION,
+			CARD_SCALE,
+			TALON_CARD_ROTATION,
+			Vector2.ZERO,
+			false
 		);
 		
 		GraphicManager.getInstance().getGraphicDataList().add(hitButton);
@@ -307,6 +321,7 @@ public class BattleDisplay implements GameObject {
 		GraphicManager.getInstance().getGraphicDataList().add(dealerBust);
 		GraphicManager.getInstance().getGraphicDataList().add(result);
 		GraphicManager.getInstance().getGraphicDataList().add(deckCard);
+		GraphicManager.getInstance().getGraphicDataList().add(talon);
 		
 		GraphicManager.getInstance().sortLayer();
 	}
@@ -434,6 +449,9 @@ public class BattleDisplay implements GameObject {
 			case BACK_TO_DECK:
 				backToDeck();
 				break;
+			case DISCARD_TO_TALON:
+				discard();
+				break;
 			case PLAYER_HIT:
 				playerHit();
 				break;
@@ -513,7 +531,7 @@ public class BattleDisplay implements GameObject {
 				
 				BufferedImage cardImg;
 				if(i == 3) {
-					cardImg = ImageLoader.getInstance().imageSplit(cardCells, CARD_SPLIT_HORIZONTAL, CARD_SPLIT_VERTICAL, 0, 4);
+					cardImg = cardBack;
 				} else {
 					cardImg = splitCardImage(firstCards[i]);
 				}
@@ -570,7 +588,71 @@ public class BattleDisplay implements GameObject {
 	}
 	
 	/**
-	 * 手札をデッキに戻すアニメーション
+	 * 手札を捨て札に捨てるアニメーション
+	 */
+	private void discard() {
+		if(timeCounter == 0) {
+			// 最初のポジションの保管
+			playerCards.forEach((pc) -> {
+				tmpVector.add(pc.getPosition());
+			});
+			dealerCards.forEach((pc) -> {
+				tmpVector.add(pc.getPosition());
+			});
+		} else if(animTime <= timeCounter) {
+			// リストから削除
+			playerCards.forEach((pc) -> {
+				GraphicManager.getInstance().getGraphicDataList().remove(pc);
+			});
+			dealerCards.forEach((pc) -> {
+				GraphicManager.getInstance().getGraphicDataList().remove(pc);
+			});
+			GraphicManager.getInstance().sortLayer();
+			
+			playerCards.clear();
+			dealerCards.clear();
+			
+			// 捨て札の位置と回転を調整して表示
+			talon.setPosition(TALON_CARD_POSITION);
+			talon.setRotation(TALON_CARD_ROTATION);
+			talon.setShow(true);
+			
+			animating = false;
+		} else {
+			// イージングしながら移動
+			for(int i = 0; i < playerCards.size(); i++) {
+				playerCards.get(i).setPosition(
+					new Vector2(
+						easingIn(tmpVector.get(i).getX(), TALON_CARD_POSITION.getX(), timeCounter, animTime),
+						easingIn(tmpVector.get(i).getY(), TALON_CARD_POSITION.getY(), timeCounter, animTime)
+					)
+				);
+			}
+			for(int i = 0; i < dealerCards.size(); i++) {
+				dealerCards.get(i).setPosition(
+					new Vector2(
+						easingIn(tmpVector.get(i + playerCards.size()).getX(), TALON_CARD_POSITION.getX(), timeCounter, animTime),
+						easingIn(tmpVector.get(i + playerCards.size()).getY(), TALON_CARD_POSITION.getY(), timeCounter, animTime)
+					)
+				);
+			}
+			
+			// イージングしながら回転
+			for(int i = 0; i < playerCards.size(); i++) {
+				playerCards.get(i).setRotation(
+					easingIn(0d, TALON_CARD_ROTATION, timeCounter, animTime)
+				);
+			}
+			for(int i = 0; i < dealerCards.size(); i++) {
+				dealerCards.get(i).setRotation(
+					easingIn(0d, TALON_CARD_ROTATION, timeCounter, animTime)
+				);
+			}
+		}
+	}
+	
+	/**
+	 * 手札と捨て札をデッキに戻すアニメーション
 	 */
 	private void backToDeck() {
 		if(timeCounter == 0) {
@@ -594,6 +676,9 @@ public class BattleDisplay implements GameObject {
 			playerCards.clear();
 			dealerCards.clear();
 			
+			// 捨て札を非表示
+			talon.setShow(false);
+			
 			animating = false;
 		} else {
 			// イージングしながら移動
@@ -613,6 +698,17 @@ public class BattleDisplay implements GameObject {
 					)
 				);
 			}
+			talon.setPosition(
+				new Vector2(
+					easingIn(TALON_CARD_POSITION.getX(), DECK_CARD_POSITION.getX(), timeCounter, animTime),
+					easingIn(TALON_CARD_POSITION.getY(), DECK_CARD_POSITION.getY(), timeCounter, animTime)
+				)
+			);
+			
+			// 捨て札をイージングしならが回転
+			talon.setRotation(
+				easingIn(TALON_CARD_ROTATION, 0d, timeCounter, animTime)
+			);
 		}
 	}
 	

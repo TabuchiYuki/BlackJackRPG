@@ -1,5 +1,7 @@
 package programs.battle;
 
+import java.util.Objects;
+
 import programs.blackJack.GameRules;
 import programs.data.AnimationType;
 import programs.data.BattlePhase;
@@ -111,8 +113,10 @@ public class BattleSystem implements GameObject {
 				
 				if(player.getCards().isEmpty()) {
 					process = 1;
-				} else {
+				} else if(gameRules.getDeck().getCards().size() <= 13){
 					display.startAnimation(AnimationType.BACK_TO_DECK, 0.3d);
+				} else {
+					display.startAnimation(AnimationType.DISCARD_TO_TALON, 0.3d);
 				}
 			} else if(display.isAnimationEnd()) {
 				process = 1;
@@ -120,7 +124,15 @@ public class BattleSystem implements GameObject {
 			break;
 		case 1:
 			if(!display.isAnimating() && !display.isAnimationEnd()) {
-				gameRules.setupDeck();
+				// デッキをシャッフルする
+				if(Objects.isNull(gameRules.getDeck().getCards())){
+					gameRules.setupDeck();
+				} else if(gameRules.getDeck().getCards().size() <= 13){
+					gameRules.setupDeck();
+				}
+				player.getCards().clear();
+				dealer.getCards().clear();
+				
 				display.startAnimation(AnimationType.WAIT, 0.2d);
 			} else if(display.isAnimationEnd()) {
 				gameRules.playerHit();
@@ -183,8 +195,8 @@ public class BattleSystem implements GameObject {
 			
 			display.displayButton(true);
 			
-			// 21以上ならヒットを不可にする
-			if(player.getScore() >= 21) {
+			// 21以上または山札が0ならヒットを不可にする
+			if(player.getScore() >= 21 || gameRules.getDeck().getCards().isEmpty()) {
 				hit.setChangeCursor(false);
 				display.hideHitButton();
 			}
@@ -257,7 +269,8 @@ public class BattleSystem implements GameObject {
 				display.changeScoreColor(dealer.getScore(), display.getDealerScoreText());
 				display.startAnimation(AnimationType.WAIT, 0.3d);
 			} else if(display.isAnimationEnd()) {
-				if(dealer.getScore() < 17) {
+				// スコアが17未満ならヒット、17以上または山札が0ならターン終了
+				if(dealer.getScore() < 17 && !gameRules.getDeck().getCards().isEmpty()) {
 					dealerHit();
 				} else {
 					process = 0;

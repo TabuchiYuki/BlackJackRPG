@@ -30,7 +30,11 @@ public enum AnimationType {
 	 */
 	ATTACK_AND_DAMAGE,
 	/**
-	 * 手札をデッキに戻す
+	 * 手札を捨て札に捨てる
+	 */
+	DISCARD_TO_TALON,
+	/**
+	 * 手札と捨て札をデッキに戻す
 	 */
 	BACK_TO_DECK,
 	/**
