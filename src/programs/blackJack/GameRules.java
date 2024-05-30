@@ -25,11 +25,16 @@ public class GameRules {
 	}
 	
 	/**
+	 * デッキのゲッター
+	 * @see {@link #deck}
+	 * @return デッキ
+	 */
+	public Deck getDeck() { return deck; }
+	
+	/**
 	 * デッキを初期化し、シャッフルする
 	 */
 	public void setupDeck() {
-		player.getData().getCards().clear();
-		dealer.getData().getCards().clear();
 		deck.initializeDeck();
 		deck.shuffle();
 	}

@@ -14,6 +14,13 @@ import programs.data.master.CardDatabase;
  */
 public class Deck {
     private List<Card> cards; // デッキ内のカード
+    
+    /**
+     * デッキ内のカードのゲッター
+     * @see {@link cards}
+     * @return デッキ内のカード
+     */
+    public List<Card> getCards() { return cards; }
 
     /**
      * デッキを初期化し、全カードを生成して追加します。
