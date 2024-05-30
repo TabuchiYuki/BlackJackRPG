@@ -31,6 +31,7 @@ public class BattleDisplay implements GameObject {
 	private final String WIN_IMAGE_KEY_NAME = "win";
 	private final String LOSE_IMAGE_KEY_NAME = "lose";
 	private final String BUST_IMAGE_KEY_NAME = "bust";
+	private final String SHUFFLE_IMAGE_KEY_NAME = "shuffle";
 	
 	private final int STATUS_TEXT_FONT_SIZE = 48;
 	private final int SCORE_TEXT_FONT_SIZE = 64;
@@ -45,6 +46,7 @@ public class BattleDisplay implements GameObject {
 	private final int CARD_LAYER_BASE = 1000;
 	private final int BUTTON_LAYER_BASE = 2000;
 	private final int BUST_LAYER_BASE = 3000;
+	private final int SHUFFLE_LAYER = 3500;
 	private final int RESULT_LAYER_BASE = 4000;
 	private final int PLAYER_CARD_RELATIVE_LAYER_BASE = 100;
 	private final int DEALER_CARD_RELATIVE_LAYER_BASE = 200;
@@ -95,6 +97,7 @@ public class BattleDisplay implements GameObject {
 	private GraphicData standButton;
 	private GraphicData playerBust;
 	private GraphicData dealerBust;
+	private GraphicData shuffle;
 	private GraphicData result;
 	
 	private TextGraphicData playerNameText;
@@ -143,6 +146,12 @@ public class BattleDisplay implements GameObject {
 	 * @return ディーラーのバースト表示
 	 */
 	public GraphicData getDealerBust() { return dealerBust; }
+	/**
+	 * シャッフル表示のゲッター
+	 * @see {@link #shuffle}
+	 * @return シャッフル表示
+	 */
+	public GraphicData getShuffle() { return shuffle; }
 	/**
 	 * プレイヤースコアのテキストのゲッター
 	 * @see {@link #playerScoreText}
@@ -304,6 +313,15 @@ public class BattleDisplay implements GameObject {
 			Vector2.ZERO,
 			false
 		);
+		shuffle = new GraphicData(
+			ImageLoader.getInstance().getImagesMap().get(SHUFFLE_IMAGE_KEY_NAME),
+			SHUFFLE_LAYER,
+			CENTER_POSITION,
+			Vector2.ONE,
+			0,
+			Vector2.ZERO,
+			false
+		);
 		result = new GraphicData(
 			ImageLoader.getInstance().getImagesMap().get(WIN_IMAGE_KEY_NAME),
 			RESULT_LAYER_BASE + 1,
@@ -336,6 +354,7 @@ public class BattleDisplay implements GameObject {
 		GraphicManager.getInstance().getGraphicDataList().add(standButton);
 		GraphicManager.getInstance().getGraphicDataList().add(playerBust);
 		GraphicManager.getInstance().getGraphicDataList().add(dealerBust);
+		GraphicManager.getInstance().getGraphicDataList().add(shuffle);
 		GraphicManager.getInstance().getGraphicDataList().add(result);
 		GraphicManager.getInstance().getGraphicDataList().add(deckCard);
 		GraphicManager.getInstance().getGraphicDataList().add(talon);

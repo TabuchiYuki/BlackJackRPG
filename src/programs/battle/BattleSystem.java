@@ -113,12 +113,16 @@ public class BattleSystem implements GameObject {
 			if(!display.isAnimating() && !display.isAnimationEnd()) {
 				display.getDealerScoreText().setText("");
 				display.getPlayerScoreText().setText("");
+				display.getAnnounceText().setText("");
 				
 				if(player.getCards().isEmpty()) {
 					process = 1;
 				} else if(gameRules.getDeck().getCards().size() <= DECK_NUMBER_TO_SHUFFLE){
+					// デッキに戻すアニメーション
+					display.getShuffle().setShow(true);
 					display.startAnimation(AnimationType.BACK_TO_DECK, 0.3d);
 				} else {
+					// 捨て札に捨てるアニメーション
 					display.startAnimation(AnimationType.DISCARD_TO_TALON, 0.3d);
 				}
 			} else if(display.isAnimationEnd()) {
@@ -175,6 +179,7 @@ public class BattleSystem implements GameObject {
 				stand.setChangeCursor(true);
 				
 				display.getAnnounceText().setText("your turn");
+				display.getShuffle().setShow(false);
 				
 				process = 0;
 				phase = BattlePhase.PLAYER;
