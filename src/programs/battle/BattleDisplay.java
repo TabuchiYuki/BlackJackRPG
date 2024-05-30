@@ -34,6 +34,7 @@ public class BattleDisplay implements GameObject {
 	
 	private final int STATUS_TEXT_FONT_SIZE = 48;
 	private final int SCORE_TEXT_FONT_SIZE = 64;
+	private final int DECK_NUMBER_FONT_SIZE = 48;
 	private final int ANNOUNCE_TEXT_FONT_SIZE = 32;
 	
 	private final int CARD_SPLIT_HORIZONTAL = 13;
@@ -57,13 +58,15 @@ public class BattleDisplay implements GameObject {
 	private final Vector2 DEALER_TEXT_BASE_POSITION = new Vector2(610, 70);
 	private final Vector2 STATUS_TEXT_LINE_SPACE = new Vector2(0, 50);
 	
+	private final Vector2 DECK_NUMBER_TEXT_POSITION = new Vector2(80, 200);
+	
 	private final Vector2 ANNOUNCE_TEXT_POSITION = new Vector2(400, 350);
 	
 	private final Vector2 PLAYER_SCORE_POSITION = new Vector2(400, 430);
 	private final Vector2 DEALER_SCORE_POSITION = new Vector2(400, 200);
 	
 	private final Vector2 DECK_CARD_POSITION = new Vector2(80, 300);
-	private final Vector2 TALON_CARD_POSITION = new Vector2(100, 100);
+	private final Vector2 TALON_CARD_POSITION = new Vector2(100, 80);
 	private final Vector2 PLAYER_CARD_LEFT_POSITION = new Vector2(320, 500);
 	private final Vector2 PLAYER_CARD_RIGHT_DISTANCE = new Vector2(160, 0);
 	private final Vector2 DEALER_CARD_LEFT_POSITION = new Vector2(320, 100);
@@ -98,6 +101,7 @@ public class BattleDisplay implements GameObject {
 	private TextGraphicData dealerHpText;
 	private TextGraphicData playerScoreText;
 	private TextGraphicData dealerScoreText;
+	private TextGraphicData deckNumText;
 	private TextGraphicData damageText;
 	private TextGraphicData announceText;
 	
@@ -238,6 +242,14 @@ public class BattleDisplay implements GameObject {
 			Color.GRAY,
 			true
 		);
+		deckNumText = new TextGraphicData(
+			"",
+			FontLoader.getInstance().getFonts().get(FONT_INDEX),
+			DECK_NUMBER_FONT_SIZE,
+			DECK_NUMBER_TEXT_POSITION,
+			Color.WHITE,
+			true
+		);
 		announceText = new TextGraphicData(
 			"",
 			FontLoader.getInstance().getFonts().get(FONT_INDEX),
@@ -249,6 +261,7 @@ public class BattleDisplay implements GameObject {
 		GraphicManager.getInstance().getTextDataList().add(damageText);
 		GraphicManager.getInstance().getTextDataList().add(playerScoreText);
 		GraphicManager.getInstance().getTextDataList().add(dealerScoreText);
+		GraphicManager.getInstance().getTextDataList().add(deckNumText);
 		GraphicManager.getInstance().getTextDataList().add(announceText);
 		
 		hitButton = new GraphicData(
@@ -430,6 +443,14 @@ public class BattleDisplay implements GameObject {
 	public void updateHpDisplay(int playerHp, int dealerHp) {
 		playerHpText.setText(String.format("hp:%d", playerHp));
 		dealerHpText.setText(String.format("hp:%d", dealerHp));;
+	}
+	
+	/**
+	 * デッキの残り枚数を更新する
+	 * @param num 枚数
+	 */
+	public void updateDeckNum(int num) {
+		deckNumText.setText(Integer.toString(num));
 	}
 	
 	/**

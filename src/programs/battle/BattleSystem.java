@@ -124,12 +124,14 @@ public class BattleSystem implements GameObject {
 			break;
 		case 1:
 			if(!display.isAnimating() && !display.isAnimationEnd()) {
-				// デッキをシャッフルする
+				// デッキが13以下ならデッキをシャッフルする
 				if(Objects.isNull(gameRules.getDeck().getCards())){
 					gameRules.setupDeck();
 				} else if(gameRules.getDeck().getCards().size() <= 13){
 					gameRules.setupDeck();
 				}
+				display.updateDeckNum(gameRules.getDeck().getCards().size());
+				
 				player.getCards().clear();
 				dealer.getCards().clear();
 				
@@ -154,6 +156,7 @@ public class BattleSystem implements GameObject {
 				};
 				display.setFirstCards(firstCards);
 				
+				display.updateDeckNum(gameRules.getDeck().getCards().size());
 				display.startAnimation(AnimationType.DISTRIBUTE_FROM_DECK, 0.3d);
 			} else if(display.isAnimationEnd()) {
 				display.getPlayerScoreText().setText(Integer.toString(player.getScore()));
@@ -229,6 +232,7 @@ public class BattleSystem implements GameObject {
 		display.displayButton(false);
 		display.setHitCard(player.getCards().get(player.getCards().size() - 1));
 		
+		display.updateDeckNum(gameRules.getDeck().getCards().size());
 		display.startAnimation(AnimationType.PLAYER_HIT, 0.2d);
 	}
 	
@@ -297,6 +301,8 @@ public class BattleSystem implements GameObject {
 		gameRules.dealerHit();
 		
 		process = 2;
+		
+		display.updateDeckNum(gameRules.getDeck().getCards().size());
 		display.setHitCard(dealer.getCards().get(dealer.getCards().size() - 1));
 		display.startAnimation(AnimationType.DEALER_HIT, 0.2d);
 	}
