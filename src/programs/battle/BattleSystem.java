@@ -23,6 +23,9 @@ import programs.system.GameObject;
 public class BattleSystem implements GameObject {
 	// 定数
 	private final int BATTLE_DISPLAY_OBJECT_INDEX = 1;
+	private final int DECK_NUMBER_TO_SHUFFLE = 13;
+	private final int PASS_SCORE_MAX = 21;
+	private final int DEALER_STAND_SCORE = 17;
 	private final String HIT_BUTTON_CLICK_EVENT_KEY = "HitButton";
 	private final String STAND_BUTTON_CLICK_EVENT_KEY = "StandButton";
 	private final String RESULT_CLICK_EVENT_KEY = "ResultClick";
@@ -113,7 +116,7 @@ public class BattleSystem implements GameObject {
 				
 				if(player.getCards().isEmpty()) {
 					process = 1;
-				} else if(gameRules.getDeck().getCards().size() <= 13){
+				} else if(gameRules.getDeck().getCards().size() <= DECK_NUMBER_TO_SHUFFLE){
 					display.startAnimation(AnimationType.BACK_TO_DECK, 0.3d);
 				} else {
 					display.startAnimation(AnimationType.DISCARD_TO_TALON, 0.3d);
@@ -127,7 +130,7 @@ public class BattleSystem implements GameObject {
 				// デッキが13以下ならデッキをシャッフルする
 				if(Objects.isNull(gameRules.getDeck().getCards())){
 					gameRules.setupDeck();
-				} else if(gameRules.getDeck().getCards().size() <= 13){
+				} else if(gameRules.getDeck().getCards().size() <= DECK_NUMBER_TO_SHUFFLE){
 					gameRules.setupDeck();
 				}
 				display.updateDeckNum(gameRules.getDeck().getCards().size());
@@ -199,19 +202,19 @@ public class BattleSystem implements GameObject {
 			display.displayButton(true);
 			
 			// 21以上または山札が0ならヒットを不可にする
-			if(player.getScore() >= 21 || gameRules.getDeck().getCards().isEmpty()) {
+			if(player.getScore() >= PASS_SCORE_MAX || gameRules.getDeck().getCards().isEmpty()) {
 				hit.setChangeCursor(false);
 				display.hideHitButton();
 			}
 			
 			// バーストしたらバースト表示
-			if(player.getScore() > 21) {
+			if(player.getScore() > PASS_SCORE_MAX) {
 				display.getPlayerBust().setShow(true);
 			}
 		}
 		
 		if(!display.isAnimating()) {
-			if(player.getScore() < 21 && hit.isClickedDown()) {
+			if(player.getScore() < PASS_SCORE_MAX && hit.isClickedDown()) {
 				playerHit();
 			}
 			if(stand.isClickedDown()) {
@@ -265,7 +268,7 @@ public class BattleSystem implements GameObject {
 		case 1:
 			if(!display.isAnimating() && !display.isAnimationEnd()) {
 				// バーストしたらバースト表示
-				if(dealer.getScore() > 21) {
+				if(dealer.getScore() > PASS_SCORE_MAX) {
 					display.getDealerBust().setShow(true);
 				}
 				
@@ -274,7 +277,7 @@ public class BattleSystem implements GameObject {
 				display.startAnimation(AnimationType.WAIT, 0.3d);
 			} else if(display.isAnimationEnd()) {
 				// スコアが17未満ならヒット、17以上または山札が0ならターン終了
-				if(dealer.getScore() < 17 && !gameRules.getDeck().getCards().isEmpty()) {
+				if(dealer.getScore() < DEALER_STAND_SCORE && !gameRules.getDeck().getCards().isEmpty()) {
 					dealerHit();
 				} else {
 					process = 0;
