@@ -1,8 +1,8 @@
 package programs.system;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -15,8 +15,7 @@ import javax.imageio.ImageIO;
  */
 public class ImageLoader{
 	// 定数
-	private final String IMAGE_REGISTRY_LOCAL_PATH = "resources/images/";
-	private final String CLASS_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+	private final String IMAGE_RESOURCE_PATH = "/resources/images/";
 	
 	private static ImageLoader instance;
 	
@@ -53,15 +52,13 @@ public class ImageLoader{
 	 */
 	public BufferedImage loadImage(String name) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		sb.append(CLASS_PATH);
-		sb.append(IMAGE_REGISTRY_LOCAL_PATH);
+		sb.append(IMAGE_RESOURCE_PATH);
 		sb.append(name);
 		String path = sb.toString();
-		File file = new File(path);
 		
-		if(file.exists()) {
-			return ImageIO.read(file);
-		} else {
+		try (InputStream ist = ImageLoader.class.getResourceAsStream(path)) {
+			return ImageIO.read(ist);
+		} catch (Exception e) {
 			return null;
 		}
 	}

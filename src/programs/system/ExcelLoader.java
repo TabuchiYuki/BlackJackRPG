@@ -1,6 +1,5 @@
 package programs.system;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +17,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  */
 public class ExcelLoader {
 	// 定数
-	private final String EXCEL_REGISTRY_LOCAL_PATH = "resources/excel/";
-	private final String CLASS_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 	private final String EXCEL_PROJECT_EXTEND = ".xlsx";
+	private final String EXCEL_RESOURCE_PATH = "/resources/excel/";
 	
 	// 静的フィールド
 	private static ExcelLoader instance;
@@ -60,14 +58,13 @@ public class ExcelLoader {
 		Workbook wb;
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(CLASS_PATH);
-		sb.append(EXCEL_REGISTRY_LOCAL_PATH);
+		sb.append(EXCEL_RESOURCE_PATH);
 		sb.append(fileName);
 		sb.append(EXCEL_PROJECT_EXTEND);
 		
 		String path = sb.toString();
 		
-		try(InputStream ist = new FileInputStream(path)) {
+		try(InputStream ist = ExcelLoader.class.getResourceAsStream(path)) {
 			wb = WorkbookFactory.create(ist);
 			return wb;
 		} catch(Exception e) {

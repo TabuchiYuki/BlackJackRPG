@@ -2,8 +2,8 @@ package programs.system;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,8 +14,7 @@ import java.util.Objects;
  */
 public class FontLoader {
 	// 定数
-	private final String FONT_REGISTRY_LOCAL_PATH = "resources/fonts/";
-	private final String CLASS_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+	private final String FONT_RESOURCE_PATH = "/resources/fonts/";
 	private final String TRUE_TYPE_FONT_EXTEND = ".ttf";
 	private final String OPEN_TYPE_FONT_EXTEND = ".otf";
 	
@@ -54,28 +53,27 @@ public class FontLoader {
 	 * @return 読み込んだフォント
 	 */
 	public Font loadFont(String fileName) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(CLASS_PATH);
-		sb.append(FONT_REGISTRY_LOCAL_PATH);
-		sb.append(fileName);
-		String tmpPath = sb.toString();
+		String ttfPath = FONT_RESOURCE_PATH + fileName + TRUE_TYPE_FONT_EXTEND;
+		String otfPath = FONT_RESOURCE_PATH + fileName + OPEN_TYPE_FONT_EXTEND;
 		
-		try {
-			File ttfFile = new File(tmpPath + TRUE_TYPE_FONT_EXTEND);
-			if(ttfFile.exists()) {
-				return Font.createFont(Font.TRUETYPE_FONT, ttfFile);
+		try (InputStream ttfStream = getClass().getResourceAsStream(ttfPath)) {
+			if (ttfStream != null) {
+				return Font.createFont(Font.TRUETYPE_FONT, ttfStream);
 			}
-			// ttfでなければotfで判定
-			File otfFile = new File(tmpPath + OPEN_TYPE_FONT_EXTEND);
-			if(otfFile.exists()) {
-				return Font.createFont(Font.TRUETYPE_FONT, otfFile);
-			}
-			System.out.print("指定のファイルが見つかりませんでした");
-			return null;
 		} catch(IOException | FontFormatException e) {
 			e.printStackTrace();
-			return null;
 		}
+		
+		try (InputStream ttfStream = getClass().getResourceAsStream(otfPath)) {
+			if (ttfStream != null) {
+				return Font.createFont(Font.TRUETYPE_FONT, ttfStream);
+			}
+		} catch(IOException | FontFormatException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.print("指定のファイルが見つかりませんでした");
+		return null;
 	}
 	
 	/**
